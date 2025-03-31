@@ -1,13 +1,7 @@
 """Neural network model implementations"""
 
 from .lif import LIF
-from .morris_lecar import (
-    MorrisLecar,
-    MorrisLecarBlockNP,
-    MorrisLecarCurrent,
-    minmax_transform,
-    z_transform,
-)
+from .morris_lecar import MorrisLecar, MorrisLecarCurrent, minmax_transform, z_transform
 
 __all__ = [
     "MorrisLecar",
