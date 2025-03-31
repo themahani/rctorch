@@ -32,4 +32,13 @@ setup(
         "scipy>=1.6.0",
         "tqdm>=4.60.0",
     ],
+    extras_require={
+        "dev": [
+            "pytest>=6.0",
+            "pytest-cov>=2.0",
+            "black>=22.0",
+            "flake8>=4.0",
+            "isort>=5.0",
+        ],
+    },
 )

@@ -1,0 +1,21 @@
+# Core dependencies
+numpy>=1.19.0
+torch>=1.8.0
+matplotlib>=3.3.0
+scipy>=1.6.0
+tqdm>=4.60.0
+pandas
+seaborn
+plotly
+dash
+
+# Development dependencies
+pytest>=6.0
+pytest-cov>=2.0
+black>=22.0
+flake8>=4.0
+isort>=5.0
+
+# Jupyter environment
+ipykernel
+jupyterlab
