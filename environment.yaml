@@ -1,0 +1,25 @@
+name: ml
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+  - mamba         # Better and faster solver for conda
+  - numpy=1.26    # Numpy to has breaking changes and produces compatibility issues.
+  - scipy
+  - ipykernel
+  - jupyterlab
+  - tqdm
+  # PyTorch for GPU support
+  - pytorch
+  - torchvision
+  - torchaudio
+  # Data Management
+  - pandas
+  # Plots
+  - matplotlib
+  - seaborn
+  - plotly
+  - dash
