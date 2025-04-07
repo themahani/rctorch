@@ -7,9 +7,7 @@ from matplotlib import pyplot as plt
 
 
 class VanDerPol:
-    def __init__(
-        self, T: float, dt: float, mu: float, tau: float, x0: float = 1, y0: float = 1
-    ) -> None:
+    def __init__(self, T: float, dt: float, mu: float, tau: float, x0: float = 1, y0: float = 1) -> None:
         self.T = T
         self.dt = dt
         self.nt = round(self.T // self.dt) + 1
