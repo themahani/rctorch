@@ -514,7 +514,7 @@ class MorrisLecar:
         k = u / (ff_coeff + self.s.T @ u)
         error = self.x_hat - self.sup[i].reshape(-1, 1)
         self.dec -= k @ error.T
-        self.Pinv = ff_coeff * (self.Pinv - k @ (self.s.T @ self.Pinv))
+        self.Pinv = (self.Pinv - k @ (u.T)) / ff_coeff
 
     def _train(self, rls_stop: float, rls_step: int, transient_time: float = 200):
         rls_stop = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
