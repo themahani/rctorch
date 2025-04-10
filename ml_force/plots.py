@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from .models import MorrisLecar
+from .models.morris_lecar import MorrisLecar
+import os
 
 
 def plot_model(
@@ -20,7 +21,10 @@ def plot_model(
     Q: float,
     n_vars: int = 3,
     mode: str = "vertical",
+    save_dir: str = "img",
 ):
+    # Make sure the save directory exists
+    os.makedirs(save_dir, exist_ok=True)
 
     x_hat_rec = model.x_hat_rec.cpu()
     # Convert all data to numpy arrays
@@ -43,7 +47,7 @@ def plot_model(
         ax.plot(t, signal)
     plt.grid(alpha=0.5)
     plt.title(f"N={N}, Ie={Ie}, Ii={Ii}, Q={Q}, l={lamda}, RLS step={rls_step}")
-    plt.savefig("img/" + prefix + "_voltage_trace.jpg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(save_dir, prefix + "_voltage_trace.jpg"), bbox_inches="tight", dpi=300)
     plt.close()
 
     # Plot the RLS results
@@ -59,7 +63,7 @@ def plot_model(
         ax[i].legend(loc=0)
         ax[i].axvline(x=rls_start, c="r", label="start RLS")
         ax[i].axvline(x=rls_stop, c="magenta", label="stop RLS")
-    plt.savefig("img/" + prefix + "_output_test.jpg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(save_dir, prefix + "_output_test.jpg"), bbox_inches="tight", dpi=300)
     plt.close()
 
     if n_vars > 1:
@@ -86,13 +90,11 @@ def plot_model(
                 lw=1,
                 label="estimator",
             )
-            ax[i].plot(
-                sup[rls_stp:, i - 1], sup[rls_stp:, i], "g", lw=1, label="supervisor"
-            )
+            ax[i].plot(sup[rls_stp:, i - 1], sup[rls_stp:, i], "g", lw=1, label="supervisor")
             ax[i].legend(loc=0)
             ax[i].set_xlabel(labels[i - 1])
             ax[i].set_ylabel(labels[i])
-        plt.savefig("img/" + prefix + "_portrait_xyz.jpg", bbox_inches="tight", dpi=300)
+        plt.savefig(os.path.join(save_dir, prefix + "_portrait_xyz.jpg"), bbox_inches="tight", dpi=300)
         plt.close()
 
     fig, ax = plt.subplots(figsize=(20, 6))
@@ -103,5 +105,5 @@ def plot_model(
     plt.axvline(x=rls_stop, c="magenta", label="stop RLS")
     plt.legend(loc=0)
     plt.suptitle(f"N={N}, Ie={Ie}, Ii={Ii}, Q={Q}, l={lamda}, RLS step={rls_step}")
-    plt.savefig("img/" + prefix + "_test_decoders.jpg", bbox_inches="tight", dpi=300)
+    plt.savefig(os.path.join(save_dir, prefix + "_test_decoders.jpg"), bbox_inches="tight", dpi=300)
     plt.close()

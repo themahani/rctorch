@@ -14,7 +14,7 @@ from typing import Any, Union
 import numpy as np
 import torch
 
-from .models import MorrisLecar, MorrisLecarBlockNP, z_transform
+from .models import MorrisLecar, z_transform
 
 
 def rmse(x, x_hat):
@@ -47,9 +47,7 @@ class CoordinateDescent:
         self.current_params = dict()
         for name in self.param_names:
             self.param_history[name] = []
-            self.current_params[name] = np.random.choice(
-                self.params[name]
-            )  # randomly choose the first param values
+            self.current_params[name] = np.random.choice(self.params[name])  # randomly choose the first param values
 
         self.score_history = list()
         self.param_scores = None
@@ -95,24 +93,16 @@ class CoordinateDescent:
         model_params = self.current_params.copy()
         model_params[self.current_param] = param_value
         model_params = model_params | self.default_args
-        thread = threading.Thread(
-            target=self._run_in_thread, name=f"Thread {i}", args=(model_params, i)
-        )
+        thread = threading.Thread(target=self._run_in_thread, name=f"Thread {i}", args=(model_params, i))
         return thread
 
     def run(self) -> None:
         while True:
-            param_index = self.param_names.index(
-                self.current_param
-            )  # find index of current param name
-            self.current_param = self.param_names[
-                param_index - 1
-            ]  # move to the previous param. Loops around the list
+            param_index = self.param_names.index(self.current_param)  # find index of current param name
+            self.current_param = self.param_names[param_index - 1]  # move to the previous param. Loops around the list
 
             print(f"Started range simulation for param {self.current_param}")
-            best_score, index = (
-                self._simulate_param_range()
-            )  # Simulate param range in threads
+            best_score, index = self._simulate_param_range()  # Simulate param range in threads
 
             # Skip CD for this param bacause of all nan values
             if index == np.nan:
@@ -191,15 +181,11 @@ class BruteForceMesh:
         ranges = [range(dim) for dim in dimensions]
         all_indices = itertools.product(*ranges)
 
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=self.num_threads
-        ) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.num_threads) as executor:
             futures = []
             for indices in all_indices:
                 model_params = self._create_model_params(indices)
-                future = executor.submit(
-                    self._run_and_save_simulation, model_params, indices, save_dir
-                )
+                future = executor.submit(self._run_and_save_simulation, model_params, indices, save_dir)
                 futures.append(future)
                 print(f"Submitted simulation with params: {model_params}")
 
@@ -211,16 +197,11 @@ class BruteForceMesh:
         """
         Create parameter dictionary for the model initialization based on indices.
         """
-        model_params = {
-            self.param_names[i]: self.params[self.param_names[i]][index]
-            for i, index in enumerate(indices)
-        }
+        model_params = {self.param_names[i]: self.params[self.param_names[i]][index] for i, index in enumerate(indices)}
         model_params = model_params | self.default_args
         return model_params
 
-    def _run_and_save_simulation(
-        self, model_params: dict, indices, save_dir: str
-    ) -> None:
+    def _run_and_save_simulation(self, model_params: dict, indices, save_dir: str) -> None:
         """
         Run a single simulation, save its data to a separate directory.
 
@@ -230,17 +211,12 @@ class BruteForceMesh:
             save_dir (str): The base directory to save simulation data in.
         """
         try:
-            model = self.Model(
-                **model_params
-            )  # Instantiate the model with all the specified params
+            model = self.Model(**model_params)  # Instantiate the model with all the specified params
             _, v_trace, dec_trace = model.render(**self.render_args)  # Render the model
 
             # Construct a unique directory name based on parameters
             param_dir_name = "_".join(
-                [
-                    f"{name}_{model_params[name]:.4f}".replace(".", "p")
-                    for name in self.param_names
-                ]
+                [f"{name}_{model_params[name]:.4f}".replace(".", "p") for name in self.param_names]
             )  # replace . with p for directory names
             simulation_dir = os.path.join(save_dir, param_dir_name)
             os.makedirs(simulation_dir, exist_ok=True)
@@ -271,7 +247,6 @@ class BruteForceMesh:
     def _save_simulation_data(
         self,
         save_path: str,
-        model_params: dict,
         output_data,
         v_trace_data,
         decoder_data,
@@ -295,9 +270,7 @@ class BruteForceMesh:
         dec_file = os.path.join(save_path, "model_decoders.npy")
         np.save(dec_file, decoder_data)
 
-    def _store_results_in_memory(
-        self, indices, model_params, output_data, v_trace_data, decoder_data
-    ):
+    def _store_results_in_memory(self, indices, model_params, output_data, v_trace_data, decoder_data):
         """
         Store simulation results in the class's nested lists.
         """
@@ -342,12 +315,8 @@ class ParticleSwarmOptimizer:
         self.param_names = [key for key, _ in self.model_params.items()]
 
     def _run_in_thread(self, model_params: dict[str, Any]) -> None:
-        model = self.Model(
-            **model_params
-        )  # Instanciate the model with all the specified params
-        _, v_trace, dec_trace = model.render(
-            **self.render_args
-        )  # Render the model with the specified render args
+        model = self.Model(**model_params)  # Instanciate the model with all the specified params
+        _, v_trace, dec_trace = model.render(**self.render_args)  # Render the model with the specified render args
 
         # Save all relevant data of the model
         self.model_outputs = model.x_hat_rec.cpu().numpy()
@@ -355,9 +324,7 @@ class ParticleSwarmOptimizer:
         self.model_decoders = dec_trace.cpu().numpy()
         self.model_params_list = model_params
 
-    def _simulate_parameter(
-        self, state_params: dict[str, Any], particle_num: int
-    ) -> threading.Thread:
+    def _simulate_parameter(self, state_params: dict[str, Any], particle_num: int) -> threading.Thread:
         # Create parameter dictionary for the model initialization
         model_params = state_params | self.default_args
         # Create and run the model in seperate thread
@@ -368,9 +335,11 @@ class ParticleSwarmOptimizer:
         )
         return thread
 
+    # TODO: Implement the fitness function
     def fitness(self, states: Union[np.ndarray, torch.Tensor, np.number]):
         pass
 
+    # TODO: Implement the PSO algorithm
     def run(
         self,
         w_inertia: float = 0.7298,
@@ -446,7 +415,7 @@ def main():
 
     from supervisors import LorenzAttractor
 
-    ### Global params for the model
+    # Global params for the model
     T = 12000
     dt = 1e-2
     t = np.arange(0, T, dt)
@@ -465,7 +434,6 @@ def main():
     middle = N // 2
     current[:middle] *= Ie  # NE bias
     current[middle:] *= Ii  # NI bias
-    # current = np.random.rand(N, 1) * Ie
 
     # RLS params
     rls_start = round(T * 0.02)
@@ -499,15 +467,13 @@ def main():
         "save_all": False,
     }
 
-    model = MorrisLecar if device_choice == "GPU" else MorrisLecarBlockNP
+    model = MorrisLecar
     bfm = BruteForceMesh(model, default_args, render_args, bfm_params)
     try:
-        bfm.run()
-        bfm.save_data(path=f"./results", f_id=f"lorenz{portion}")
+        bfm.run(save_dir="./results")
 
-    except:
-        print("Run cancelled. Exiting...")
-        bfm.save_data(path=f"./results", f_id=f"lorenz{portion}")
+    except Exception as e:
+        raise RuntimeError("Run cancelled with error:\n", e)
 
 
 if __name__ == "__main__":

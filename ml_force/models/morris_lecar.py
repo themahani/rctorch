@@ -2,6 +2,7 @@
 
 import os
 import time
+from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -15,7 +16,7 @@ class MorrisLecar:
         supervisor: np.ndarray,
         dt: float,
         T: float,
-        BIAS: np.ndarray,
+        BIAS: Union[np.ndarray, torch.Tensor, np.float64],
         N: int = 20,
         C: float = 20,
         g_L: float = 2,
@@ -138,9 +139,7 @@ class MorrisLecar:
         self.E[:middle, 0] *= E_AMPA  # first half of the neurons are excitatory
         self.E[middle:, 0] *= E_GABA  # second half is inhibitory
         # Let's follow Dale's law
-        self.ones = torch.ones(
-            size=(1, self._N), dtype=torch.float32, device=self.device
-        )
+        self.ones = torch.ones(size=(1, self._N), dtype=torch.float32, device=self.device)
         self.E = (self.E @ self.ones).T
         # self.E = cp.tile(self.E, reps=(N, 1))
         self.w_rand = w_rand
@@ -157,9 +156,7 @@ class MorrisLecar:
         self.l = l
         dim = np.min(self.sup.shape)
         self.dec = torch.zeros(size=(N, dim), dtype=torch.float32, device=self.device)
-        self.eta = Q * (
-            2 * torch.rand(N, dim, dtype=torch.float32, device=self.device) - 1
-        )
+        self.eta = Q * (2 * torch.rand(N, dim, dtype=torch.float32, device=self.device) - 1)
         self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.l
         self.x_hat = self.dec.T @ self.s
         self.x_hat_rec = torch.zeros(
@@ -234,9 +231,7 @@ class MorrisLecar:
         is_plus_inf = inp > inf_value
         is_minus_inf = inp < -inf_value
 
-        if (
-            not is_minus_inf.any() and not is_plus_inf.any()
-        ):  # If don't have inf values, don't do anything
+        if not is_minus_inf.any() and not is_plus_inf.any():  # If don't have inf values, don't do anything
             return
 
         inp[is_plus_inf] = mask_value
@@ -245,9 +240,7 @@ class MorrisLecar:
         return inp
 
     def euler_step(self, closed_loop: bool = True, voltage_bound: float = None) -> None:
-        dv = self._dt * self.v_dot(
-            closed_loop
-        )  # + self.w_rand * torch.rand(self._N, 1, device=self.device)
+        dv = self._dt * self.v_dot(closed_loop)  # + self.w_rand * torch.rand(self._N, 1, device=self.device)
         self.n += self._dt * self.n_dot()
         self.s += self._dt * self.s_dot()
         self.v += dv
@@ -348,9 +341,7 @@ class MorrisLecar:
             (line,) = self.neural_ax.plot([], [])
             self.neural_lines.append(line)
 
-        self.neural_ax.set_title(
-            f"N={self._N}, T={self._duration}, RLS step = {rls_step}"
-        )
+        self.neural_ax.set_title(f"N={self._N}, T={self._duration}, RLS step = {rls_step}")
         self.neural_ax.set_ylim(-1, n_neurons)
         self.neural_ax.set_xlim(0, 1)
         self.neural_bg = self.neural_fig.canvas.copy_from_bbox(self.neural_ax.bbox)
@@ -366,12 +357,30 @@ class MorrisLecar:
             (line,) = self.decoder_ax.plot([], [])
             self.decoder_lines.append(line)
 
-        self.decoder_ax.set_title(
-            f"N={self._N}, T={self._duration}, RLS step = {rls_step}"
-        )
+        self.decoder_ax.set_title(f"N={self._N}, T={self._duration}, RLS step = {rls_step}")
         self.decoder_ax.set_ylim(-50, 50)
         self.decoder_ax.set_xlim(0, 1)
         self.decoder_bg = self.decoder_fig.canvas.copy_from_bbox(self.decoder_ax.bbox)
+
+    def _save_live_plots(self, save_dir: str = "plots"):
+        """Save the live plots to the given directory and close the figures.
+        If the directory does not exist, it will be created.
+        The figures are saved as jpg files with the names "block_rls_output.jpg", "block_neural_output.jpg",
+        and "block_decoder_output.jpg".
+
+        Parameters
+        ----------
+        save_dir : str, optional
+            directory to save the live plots, by default "plots"
+        """
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        self.rls_fig.savefig(os.path.join(save_dir, "block_rls_output.jpg"), bbox_inches="tight", dpi=250)
+        self.neural_fig.savefig(os.path.join(save_dir, "block_neural_output.jpg"), bbox_inches="tight", dpi=250)
+        self.decoder_fig.savefig(os.path.join(save_dir, "block_decoder_output.jpg"), bbox_inches="tight", dpi=250)
+        plt.close(self.rls_fig)
+        plt.close(self.neural_fig)
+        plt.close(self.decoder_fig)
 
     def render(
         self,
@@ -383,6 +392,43 @@ class MorrisLecar:
         n_neurons: int = 10,
         save_all: bool = False,
     ):
+        """
+        Run the system simulation with the force method.
+
+        This function simulates the model dynamics using an Euler integration scheme while recording the
+        voltage of selected neurons and the corresponding decoder outputs over time. It optionally updates
+        live plots during the simulation and saves these plots to a designated directory upon completion.
+
+        rls_start : float or int
+            The time (in ms) to start applying the Recursive Least Squares (RLS) algorithm. This value is
+            converted from milliseconds to simulation time steps using the model's internal time step (self._dt).
+        rls_stop : float or int
+            The time (in ms) to stop applying the RLS algorithm. This value is also converted from milliseconds
+            to simulation time steps.
+        rls_step : int
+            The interval (in simulation steps) at which the RLS algorithm is applied between rls_start and rls_stop.
+            Determines whether live plotting is enabled. If True, the function will update plots during simulation.
+            The interval (in ms) at which the live plots are updated; this value is converted to simulation time steps.
+            The number of neurons to sample for recording voltage and decoder traces when save_all is False (default is 10).
+            If True, voltage and decoder traces for all neurons are recorded;
+            otherwise, only the sampled neurons are recorded (default is False).
+
+        tuple of torch.Tensor
+            A tuple containing:
+              - random_neuron: A tensor containing the indices of the randomly selected neurons.
+              - voltage_trace: A tensor containing the recorded voltage traces. Its shape is
+                (number of time steps, n_neurons) if save_all is False, or (number of time steps, total neurons)
+                if save_all is True.
+              - decoder_trace: A tensor containing the recorded decoder outputs with a shape similar to voltage_trace.
+
+        Raises
+        ------
+        Exception
+            If an error is encountered during the Euler integration step, the simulation loop is terminated and the
+            exception is printed.
+        Exception
+            If an error occurs while attempting to save the live plots after the simulation.
+        """
         random_neuron = torch.tensor(
             np.random.choice(a=self._N, size=n_neurons, replace=False),
             device=self.device,
@@ -422,6 +468,7 @@ class MorrisLecar:
             print(decoder_trace.shape)
             plt.show(block=False)
 
+        # Main loop
         for i in tqdm(range(self._nt)):
             try:
                 self.euler_step()
@@ -449,25 +496,14 @@ class MorrisLecar:
                     self.rls(i)
         if live_plot:
             try:
-                self.rls_fig.savefig(
-                    "img/block_rls_output.jpg", bbox_inches="tight", dpi=250
-                )
-                self.neural_fig.savefig(
-                    "img/block_neural_output.jpg", bbox_inches="tight", dpi=250
-                )
-                self.decoder_fig.savefig(
-                    "img/block_decoder_output.jpg", bbox_inches="tight", dpi=250
-                )
-                plt.close(self.rls_fig)
-                plt.close(self.neural_fig)
-                plt.close(self.decoder_fig)
+                self._save_live_plots(save_dir=os.path.join(os.getcwd(), "plots"))
             except Exception as e:
                 print("Failed to Save plots.\n", e)
 
         return random_neuron.cpu(), voltage_trace.cpu(), decoder_trace.cpu()
 
     def rls(self, i):
-        """Run the system with the force method. Return the final decoder"""
+        """Run the system with the force method and update the decoder weights."""
         error = self.x_hat - self.sup[i].reshape(-1, 1)
         q = self.Pinv @ self.s
         self.Pinv -= (q @ q.T) / (1 + self.s.T @ q)
@@ -476,7 +512,7 @@ class MorrisLecar:
     def rls_ff(self, i, ff_coeff: float = 0.8) -> None:
         u = self.Pinv @ self.s
         k = u / (ff_coeff + self.s.T @ u)
-        error = self.x_hat - self.sup[i].reshape(-1 ,1)
+        error = self.x_hat - self.sup[i].reshape(-1, 1)
         self.dec -= k @ error.T
         self.Pinv = ff_coeff * (self.Pinv - k @ (self.s.T @ self.Pinv))
 
@@ -532,7 +568,7 @@ class MorrisLecarCurrent(MorrisLecar):
         supervisor: np.ndarray,
         dt: float,
         T: float,
-        BIAS: np.ndarray,
+        BIAS: Union[np.ndarray, np.float64],
         N: int = 20,
         C: float = 20,
         g_L: float = 2,
@@ -561,7 +597,7 @@ class MorrisLecarCurrent(MorrisLecar):
         p_sparsity: float = 1.0,
     ) -> None:
         """A modified version of the Morris Lecar neural network model. This model uses a block structure to
-        simplify and optimize for matrix multiplications using `Numpy`.
+        simplify and optimize for matrix multiplications using `PyTorch`.
 
         Parameters
         ----------

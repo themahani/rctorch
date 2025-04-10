@@ -7,7 +7,7 @@ setup(
     name="ml-force",
     version="0.1.0",
     author="Ali Mahani",
-    author_email="author@example.com",  # Add your email
+    author_email="ali.a.mahani@zoho.com",
     description="Morris-Lecar neural networks with force learning",
     long_description=long_description,
     long_description_content_type="text/markdown",
