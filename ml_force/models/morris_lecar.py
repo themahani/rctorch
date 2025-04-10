@@ -473,28 +473,35 @@ class MorrisLecar:
         self.Pinv -= (q @ q.T) / (1 + self.s.T @ q)
         self.dec -= (self.Pinv @ self.s) @ error.T
 
+    def rls_ff(self, i, ff_coeff: float = 0.8) -> None:
+        u = self.Pinv @ self.s
+        k = u / (ff_coeff + self.s.T @ u)
+        error = self.x_hat - self.sup[i].reshape(-1 ,1)
+        self.dec -= k @ error.T
+        self.Pinv = ff_coeff * (self.Pinv - k @ (self.s.T @ self.Pinv))
+
     def _train(self, rls_stop: float, rls_step: int, transient_time: float = 200):
         rls_stop = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
         nt = int(transient_time // self._dt)  # Transform from [ms] to # of time steps
         # Run the reservoir for a transient time
         print("Transient Time:")
         for i in tqdm(range(nt)):
-            self.euler_step(closed_loop=False)
+            self.euler_step()
 
         # Run the main training loop
         print("Training time:")
         for i in tqdm(range(rls_stop)):
-            self.euler_step(closed_loop=True)
+            self.euler_step()
             self.x_hat_rec[i] = self.x_hat[:, 0]
 
             if i % rls_step == 1:
-                self.rls(i)
+                self.rls_ff(i)
 
     def _infer(self, rls_stop: float) -> None:
         test_start = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
 
         for i in tqdm(range(test_start, self._nt)):
-            self.euler_step(closed_loop=True)
+            self.euler_step()
             self.x_hat_rec[i] = self.x_hat[:, 0]
 
     @classmethod
@@ -658,113 +665,3 @@ class MorrisLecarCurrent(MorrisLecar):
 
     def calc_ipsc(self) -> None:
         self.ipsc = -self.gbar * self.w @ self.s
-
-    # def euler_step(self) -> None:
-    #     dv = self._dt * self.v_dot()
-    #     self.n += self._dt * self.n_dot()
-    #     self.s += self._dt * self.s_dot()
-    #     self.v += dv
-
-    #     self.x_hat = self.dec.T @ self.s
-
-
-def z_transform(signal: np.ndarray):
-    return (signal - signal.mean(axis=0)) / signal.std(axis=0)
-
-
-def minmax_transform(signal, zero_mean: bool = False):
-    min = signal.min(axis=0)
-    max = signal.max(axis=0)
-    minmaxed = (signal - min) / (max - min)
-    if zero_mean:
-        minmaxed -= minmaxed.mean(axis=0)
-    return minmaxed
-
-
-def test():
-    """Test the module"""
-    from plots import plot_model
-    from supervisors import LorenzAttractor, VanDerPol
-
-    seed = 1
-    np.random.seed(seed)
-    T = 10000
-    dt = 1e-2
-    t = np.arange(0, T, dt)
-    nt = t.size
-    x = LorenzAttractor(T, dt, tau=0.01).generate(transient_time=2000.0)
-
-    x = x.T
-    signal = z_transform(x)
-    print(signal.shape)
-
-    NE = 1000
-    NI = 1000
-    N = NI + NE
-
-    # input current for I and E neurons
-    Ie = 75
-    Ii = 75
-    current = np.ones((N, 1))
-    middle = N // 2
-    current[:middle] *= Ie  # NE bias
-    current[middle:] *= Ii  # NI bias
-    # current = np.random.rand(N, 1) * Ie
-
-    # RLS params
-    rls_start = round(T * 0.02)
-    rls_start = 500
-    rls_stop = round(T * 0.85)
-    rls_step = 20
-    Q = 200
-    lamda = 1e-5
-    gbar = 15
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using Device <{device}> for PyTorch computations...\n")
-    torch.cuda.random.manual_seed(seed)
-
-    try:
-        model = MorrisLecar(
-            supervisor=signal,
-            BIAS=current,
-            T=T,
-            dt=dt,
-            N=N,
-            Q=Q,
-            gbar=gbar,
-            l=lamda,
-            device=device,
-        )
-    except Exception as e:
-        print(e)
-        print(torch.cuda.memory_summary(device=device))
-
-    start = time.time()
-    random_neurons, voltage_trace, decoder_trace = model.render(
-        rls_start=rls_start,
-        rls_stop=rls_stop,
-        rls_step=rls_step,
-        live_plot=False,
-        plt_interval=300,
-        n_neurons=10,
-        save_all=False,
-    )
-    end = time.time()
-    print(f"Render took {end - start} seconds to finish...\n")
-
-    plot_params = {
-        "rls_start": rls_start,
-        "rls_stop": rls_stop,
-        "rls_step": rls_step,
-        "lamda": lamda,
-        "Q": Q,
-        "n_vars": min(model.sup.shape),
-    }
-    plot_model(
-        model, "lorenz", random_neurons, voltage_trace, decoder_trace, **plot_params
-    )
-
-
-if __name__ == "__main__":
-    test()
