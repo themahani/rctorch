@@ -6,7 +6,7 @@ from ml_force import HyperChaoticAttractor, LorenzAttractor, VanDerPol
 
 @pytest.fixture
 def time_params():
-    return {"T": 1000, "dt": 0.1, "tau": 0.01}
+    return {"T": 1000.0, "dt": 0.1, "tau": 0.01}
 
 
 def test_van_der_pol(time_params):

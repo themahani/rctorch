@@ -247,7 +247,6 @@ class BruteForceMesh:
     def _save_simulation_data(
         self,
         save_path: str,
-        model_params: dict,
         output_data,
         v_trace_data,
         decoder_data,
@@ -416,7 +415,7 @@ def main():
 
     from supervisors import LorenzAttractor
 
-    ### Global params for the model
+    # Global params for the model
     T = 12000
     dt = 1e-2
     t = np.arange(0, T, dt)
@@ -435,7 +434,6 @@ def main():
     middle = N // 2
     current[:middle] *= Ie  # NE bias
     current[middle:] *= Ii  # NI bias
-    # current = np.random.rand(N, 1) * Ie
 
     # RLS params
     rls_start = round(T * 0.02)
@@ -472,12 +470,10 @@ def main():
     model = MorrisLecar
     bfm = BruteForceMesh(model, default_args, render_args, bfm_params)
     try:
-        bfm.run()
-        bfm.save_data(path=f"./results", f_id=f"lorenz{portion}")
+        bfm.run(save_dir="./results")
 
-    except:
-        print("Run cancelled. Exiting...")
-        bfm.save_data(path=f"./results", f_id=f"lorenz{portion}")
+    except Exception as e:
+        raise RuntimeError("Run cancelled with error:\n", e)
 
 
 if __name__ == "__main__":

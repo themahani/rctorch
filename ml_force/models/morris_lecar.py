@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from tqdm import tqdm
-from typing import Union, Any
+from typing import Union
 
 
 class MorrisLecar:
@@ -410,7 +410,8 @@ class MorrisLecar:
             Determines whether live plotting is enabled. If True, the function will update plots during simulation.
             The interval (in ms) at which the live plots are updated; this value is converted to simulation time steps.
             The number of neurons to sample for recording voltage and decoder traces when save_all is False (default is 10).
-            If True, voltage and decoder traces for all neurons are recorded; otherwise, only the sampled neurons are recorded (default is False).
+            If True, voltage and decoder traces for all neurons are recorded;
+            otherwise, only the sampled neurons are recorded (default is False).
 
         tuple of torch.Tensor
             A tuple containing:
@@ -715,14 +716,12 @@ def test():
 
     sys.path.append(str(Path(__file__).resolve().parent.parent))
     from plots import plot_model
-    from supervisors import LorenzAttractor, VanDerPol
+    from supervisors import LorenzAttractor
 
     seed = 1
     np.random.seed(seed)
     T = 1000
     dt = 5e-2
-    t = np.arange(0, T, dt)
-    nt = t.size
     x = LorenzAttractor(T, dt, tau=0.01).generate(transient_time=2000.0)
 
     x = x.T
