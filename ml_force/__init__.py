@@ -4,6 +4,7 @@ from .models import LIF, MorrisLecar, MorrisLecarCurrent, minmax_transform, z_tr
 from .optimizers import BruteForceMesh, CoordinateDescent, ParticleSwarmOptimizer
 from .plots import plot_model
 from .supervisors import HyperChaoticAttractor, LorenzAttractor, VanDerPol
+from .utils import minmax_transform, z_transform
 
 __version__ = "0.1.0"
 __all__ = [
