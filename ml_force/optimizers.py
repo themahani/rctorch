@@ -14,7 +14,8 @@ from typing import Any, Union
 import numpy as np
 import torch
 
-from .models import MorrisLecar, z_transform
+from .models import MorrisLecar
+from .utils import z_transform
 
 
 def rmse(x, x_hat):
