@@ -1,6 +1,6 @@
 """ML-Force: Morris-Lecar neural networks with force learning"""
 
-from .models import LIF, MorrisLecar, MorrisLecarCurrent, minmax_transform, z_transform
+from .models import LIF, MorrisLecar, MorrisLecarCurrent
 from .optimizers import BruteForceMesh, CoordinateDescent, ParticleSwarmOptimizer
 from .plots import plot_model
 from .supervisors import HyperChaoticAttractor, LorenzAttractor, VanDerPol
