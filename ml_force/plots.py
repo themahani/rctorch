@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from models.morris_lecar import MorrisLecar
+from .models.morris_lecar import MorrisLecar
 import os
 
 
