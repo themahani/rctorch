@@ -505,16 +505,17 @@ class MorrisLecar:
     def rls(self, i):
         """Run the system with the force method and update the decoder weights."""
         error = self.x_hat - self.sup[i].reshape(-1, 1)
-        q = self.Pinv @ self.s
-        self.Pinv -= (q @ q.T) / (1 + self.s.T @ q)
-        self.dec -= (self.Pinv @ self.s) @ error.T
+        u = self.Pinv @ self.s
+        k = u / (1 + self.s.T @ u)
+        self.Pinv -= k @ u.T
+        self.dec -= k @ error.T
 
     def rls_ff(self, i, ff_coeff: float = 0.8) -> None:
         u = self.Pinv @ self.s
         k = u / (ff_coeff + self.s.T @ u)
         error = self.x_hat - self.sup[i].reshape(-1, 1)
         self.Pinv = (self.Pinv - k @ (u.T)) / ff_coeff
-        self.dec -= (self.Pinv @ self.s) @ error.T
+        self.dec -= k @ error.T
 
     def _train(self, rls_stop: float, rls_step: int, transient_time: float = 200):
         rls_stop = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
