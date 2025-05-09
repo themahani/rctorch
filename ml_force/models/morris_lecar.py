@@ -550,7 +550,8 @@ class MorrisLecarCurrent(MorrisLecar):
         dt: float,
         T: float,
         BIAS: Union[np.ndarray, np.float64],
-        N: int = 20,
+        Ne: int = 20,
+        Ni: int = 20,
         C: float = 20,
         g_L: float = 2,
         g_K: float = 8,
@@ -591,8 +592,10 @@ class MorrisLecarCurrent(MorrisLecar):
         BIAS : np.ndarray
             The input bias into all the neurons in the reservoir in [pA].
             Can be engineered.
-        N : int, optional
-            The number of neurons in the reservoir, by default 20
+        Ne : int, optional
+            The number of excitatory neurons in the reservoir, by default 20
+        Ni : int, optional
+            The number of inhibitory neurons in the reservoir, by default 20
         C : float, optional
             The capaticance of the Morris Lecar model. Also acts as the time constant of the nerwork, by default 20
         g_L : float, optional
@@ -644,7 +647,8 @@ class MorrisLecarCurrent(MorrisLecar):
             dt,
             T,
             BIAS,
-            N,
+            Ne,
+            Ni,
             C,
             g_L,
             g_K,
