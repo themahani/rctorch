@@ -17,7 +17,8 @@ class MorrisLecar:
         dt: float,
         T: float,
         BIAS: Union[np.ndarray, torch.Tensor, np.float64],
-        N: int = 20,
+        Ne: int = 20,
+        Ni: int = 20,
         C: float = 20,
         g_L: float = 2,
         g_K: float = 8,
@@ -57,8 +58,10 @@ class MorrisLecar:
         BIAS : np.ndarray
             The input bias into all the neurons in the reservoir in [pA].
             Can be engineered.
-        N : int, optional
-            The number of neurons in the reservoir, by default 20
+        Ne : int, optional
+            The number of excitatory neurons in the reservoir, by default 20
+        Ni : int, optional
+            The number of inhibitory neurons in the reservoir, by default 20
         C : float, optional
             The capaticance of the Morris Lecar model. Also acts as the time constant of the nerwork, by default 20
         g_L : float, optional
@@ -106,7 +109,9 @@ class MorrisLecar:
         """
         # Morris Lecar model parameters
         self.device = device
-        self._N = N
+        self._Ne = Ne
+        self._Ni = Ni
+        self._N = Ne + Ni
         self._BIAS = torch.tensor(BIAS, device=self.device)
         self._C = C
         self._g_L = g_L
@@ -130,19 +135,14 @@ class MorrisLecar:
         self.gbar = gbar
 
         # Network connections
-        self.v = torch.zeros(size=(N, 1), dtype=torch.float32, device=self.device)
-        self.s = torch.zeros(size=(N, 1), dtype=torch.float32, device=self.device)
-        self.n = torch.rand(N, 1, dtype=torch.float32, device=self.device)
-        self.w = torch.rand(N, N, device=self.device) < (2 / self._N)
-        self.E = torch.ones(size=(N, 1), dtype=torch.float32, device=self.device)
-        middle = int(N // 2)
-        self.E[:middle, 0] *= E_AMPA  # first half of the neurons are excitatory
-        self.E[middle:, 0] *= E_GABA  # second half is inhibitory
+        self.v = torch.zeros(size=(self._N, 1), dtype=torch.float32, device=self.device)
+        self.s = torch.zeros(size=(self._N, 1), dtype=torch.float32, device=self.device)
+        self.n = torch.rand(self._N, 1, dtype=torch.float32, device=self.device)
+        self.w = torch.rand(self._N, self._N, device=self.device) < (2 / self._N)
+        self.E = torch.tensor([E_AMPA] * Ne + [E_GABA] * Ni, dtype=torch.float32, device=self.device).reshape(self._N, 1)
         # Let's follow Dale's law
         self.ones = torch.ones(size=(1, self._N), dtype=torch.float32, device=self.device)
         self.E = (self.E @ self.ones).T
-        # self.E = cp.tile(self.E, reps=(N, 1))
-        self.w_rand = w_rand
 
         # Time series
         self.sup = torch.tensor(supervisor, dtype=torch.float32, device=self.device)
@@ -155,8 +155,8 @@ class MorrisLecar:
         # Encoding and decoding
         self.l = l
         dim = np.min(self.sup.shape)
-        self.dec = torch.zeros(size=(N, dim), dtype=torch.float32, device=self.device)
-        self.eta = Q * (2 * torch.rand(N, dim, dtype=torch.float32, device=self.device) - 1)
+        self.dec = torch.zeros(size=(self._N, dim), dtype=torch.float32, device=self.device)
+        self.eta = Q * (2 * torch.rand(self._N, dim, dtype=torch.float32, device=self.device) - 1)
         self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.l
         self.x_hat = self.dec.T @ self.s
         self.x_hat_rec = torch.zeros(
@@ -164,7 +164,7 @@ class MorrisLecar:
             dtype=torch.float32,
             device=self.device,
         )
-        self.ipsc = torch.zeros(size=(N, 1), dtype=torch.float32, device=self.device)
+        self.ipsc = torch.zeros(size=(self._N, 1), dtype=torch.float32, device=self.device)
 
     def __reinit__(self):
         self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.l
@@ -253,26 +253,6 @@ class MorrisLecar:
 
         if self.v.isnan().any():
             raise RuntimeError("NaN value encountered during iteration.")
-
-    def _standardize(self, signal: torch.Tensor, i: int):
-        """Scale the signal for have a range of [0, 1]
-
-        Parameters
-        ----------
-        signal : torch.Tensor
-            Input signal to transform
-        i : int
-            The index added to the signal
-
-        Returns
-        -------
-        torch.Tensor
-            The scaled signal
-        """
-        minim = torch.min(signal)
-        maxim = torch.max(signal)
-        signal = (signal - minim) / (maxim - minim) + i
-        return signal
 
     def _update_rls_plot(self, i):
         self.rls_line.set_xdata(self.time_cpu[:i])
