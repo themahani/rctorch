@@ -38,9 +38,8 @@ class MorrisLecar:
         E_AMPA: float = 0,
         E_GABA: float = -75,
         Q: float = 100,
-        l: float = 1e-5,
+        ridge_coeff: float = 1.0,
         gbar: float = 1,
-        w_rand: float = 0.0,
         device: torch.device = torch.device("cpu"),
     ) -> None:
         """A modified version of the Morris Lecar neural network model. This model uses a block structure to
@@ -226,7 +225,7 @@ class MorrisLecar:
         return inp
 
     def euler_step(self, closed_loop: bool = True, voltage_bound: float = None) -> None:
-        dv = self._dt * self.v_dot(closed_loop)  # + self.w_rand * torch.rand(self._N, 1, device=self.device)
+        dv = self._dt * self.v_dot(closed_loop)
         self.n += self._dt * self.n_dot()
         self.s += self._dt * self.s_dot()
         self.v += dv
