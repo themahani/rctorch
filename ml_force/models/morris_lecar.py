@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import time
 from typing import Union
 
 import matplotlib.pyplot as plt
@@ -316,8 +315,6 @@ class MorrisLecar:
         self.neural_lines = []
         n_neurons = voltage_trace.shape[1]
         for i in range(n_neurons):
-            signal = voltage_trace[:, i]
-            signal = self._standardize(signal, i)
             (line,) = self.neural_ax.plot([], [])
             self.neural_lines.append(line)
 
@@ -333,7 +330,6 @@ class MorrisLecar:
         n_neurons = decoder_trace.shape[1]
 
         for i in range(n_neurons):
-            signal = decoder_trace[:, i]
             (line,) = self.decoder_ax.plot([], [])
             self.decoder_lines.append(line)
 
@@ -362,6 +358,13 @@ class MorrisLecar:
         plt.close(self.neural_fig)
         plt.close(self.decoder_fig)
 
+    def _init_plots(self, voltage_trace_cpu, decoder_trace_cpu, rls_step):
+        self._rls_plot_init(rls_step)
+        self._neural_plot_init(voltage_trace_cpu, rls_step)
+        self._decoder_plot_init(decoder_trace_cpu, rls_step)
+        plt.show(block=False)
+
+
     def render(
         self,
         rls_start,
@@ -369,8 +372,10 @@ class MorrisLecar:
         rls_step,
         live_plot: bool,
         plt_interval: float,
+        ff_coeff: float = 1.0,
         n_neurons: int = 10,
         save_all: bool = False,
+        save_dir: str = None
     ):
         """
         Run the system simulation with the force method.
@@ -379,6 +384,8 @@ class MorrisLecar:
         voltage of selected neurons and the corresponding decoder outputs over time. It optionally updates
         live plots during the simulation and saves these plots to a designated directory upon completion.
 
+        Parameters
+        ----------
         rls_start : float or int
             The time (in ms) to start applying the Recursive Least Squares (RLS) algorithm. This value is
             converted from milliseconds to simulation time steps using the model's internal time step (self._dt).
@@ -387,12 +394,20 @@ class MorrisLecar:
             to simulation time steps.
         rls_step : int
             The interval (in simulation steps) at which the RLS algorithm is applied between rls_start and rls_stop.
+        live_plot: bool
             Determines whether live plotting is enabled. If True, the function will update plots during simulation.
+        plt_interval: int
             The interval (in ms) at which the live plots are updated; this value is converted to simulation time steps.
+        n_neurons: int
             The number of neurons to sample for recording voltage and decoder traces when save_all is False (default is 10).
+        save_all: bool
             If True, voltage and decoder traces for all neurons are recorded;
             otherwise, only the sampled neurons are recorded (default is False).
+        save_dir: str
+            Path to save the final figures. Defaults to None
 
+        Returns
+        -------
         tuple of torch.Tensor
             A tuple containing:
               - random_neuron: A tensor containing the indices of the randomly selected neurons.
@@ -409,44 +424,34 @@ class MorrisLecar:
         Exception
             If an error occurs while attempting to save the live plots after the simulation.
         """
-        random_neuron = torch.tensor(
-            np.random.choice(a=self._N, size=n_neurons, replace=False),
-            device=self.device,
-        )
-        if save_all == False:
-            voltage_trace = torch.zeros(
-                size=(self.time.size()[0], n_neurons),
-                dtype=torch.float32,
-                device=self.device,
-            )
-            decoder_trace = torch.zeros(
-                size=(self.time.size()[0], n_neurons),
-                dtype=torch.float32,
+        if not save_all:
+            neurons = torch.tensor(
+                np.random.choice(a=self._N, size=n_neurons, replace=False),
                 device=self.device,
             )
         else:
-            voltage_trace = torch.zeros(
-                size=(self.time.size()[0], self._N),
-                dtype=torch.float32,
-                device=self.device,
-            )
-            decoder_trace = torch.zeros(
-                size=(self.time.size()[0], self._N),
-                dtype=torch.float32,
-                device=self.device,
-            )
+            neurons = torch.arange(0, self._N).to(self.device)
+
+        voltage_trace = torch.zeros(
+            size=(self.time.size()[0], neurons.size[0]),
+            dtype=torch.float32,
+            device=self.device,
+        )
+        decoder_trace = torch.zeros(
+            size=(self.time.size()[0], neurons.size[0]),
+            dtype=torch.float32,
+            device=self.device,
+        )
+
         # Setup for RLS -- convert ms to number of time steps
-        rls_start = int(rls_start // self._dt)
-        rls_stop = int(rls_stop // self._dt)
+        nt_train_start = int(rls_start // self._dt)
+        nt_train_stop = int(rls_stop // self._dt)
 
         # Setup Plots
         if live_plot:
             plt_interval = int(plt_interval // self._dt)
-            self._rls_plot_init(rls_step)
-            self._neural_plot_init(voltage_trace.cpu(), rls_step)
-            self._decoder_plot_init(decoder_trace.cpu(), rls_step)
-            print(decoder_trace.shape)
-            plt.show(block=False)
+            self._init_plots(voltage_trace.cpu(), 
+                             decoder_trace.cpu(), rls_step)
 
         # Main loop
         for i in tqdm(range(self._nt)):
@@ -458,12 +463,8 @@ class MorrisLecar:
                 print(e)
                 break
 
-            if save_all == False:
-                voltage_trace[i] = self.v[random_neuron, 0]
-                decoder_trace[i] = self.dec[random_neuron, -1]
-            else:
-                voltage_trace[i] = self.v[:, 0]
-                decoder_trace[i] = self.dec[:, -1]
+            voltage_trace[i] = self.v[neurons, 0]
+            decoder_trace[i] = self.dec[neurons, -1]
 
             self.x_hat_rec[i] = self.x_hat[:, 0]
 
@@ -471,12 +472,15 @@ class MorrisLecar:
                 self._update_rls_plot(i)
                 self._update_neural_plot(voltage_trace[:i].cpu(), i)
                 self._update_decoder_plot(decoder_trace[:i].cpu(), i)
+
             if i > rls_start and i < rls_stop:
                 if i % rls_step == 1:
-                    self.rls(i)
+                    self.rls_ff(i, ff_coeff)
         if live_plot:
             try:
-                self._save_live_plots(save_dir=os.path.join(os.getcwd(), "plots"))
+                if save_dir is None:
+                    save_dir = os.getcwd()
+                self._save_live_plots(save_dir=os.path.join(save_dir, "plots"))
             except Exception as e:
                 print("Failed to Save plots.\n", e)
 

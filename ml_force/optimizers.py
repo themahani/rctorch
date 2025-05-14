@@ -419,7 +419,7 @@ def main():
     # Global params for the model
     T = 12000
     dt = 1e-2
-    t = np.arange(0, T, dt)
+
     x = LorenzAttractor(T, dt, tau=0.008).generate(transient_time=500.0)
     x = x.T
     signal = z_transform(x)

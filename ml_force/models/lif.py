@@ -13,10 +13,10 @@ class LIF:
         sup: np.ndarray,
         tau_m: float = 50,
         tau_s: float = 20,
-        I: float = 80,
+        BIAS: float = 80,
         G: float = 5,
         Q: float = 200,
-        l: float = 1e-5,
+        ridge_coeff: float = 1.0,
     ) -> None:
         self.T = T
         self.dt = dt
@@ -24,7 +24,7 @@ class LIF:
         self.nt = self.time.size()[0]
         self.N = N
         self.device = device
-        self.I = 80  # pA
+        self._BIAS = BIAS  # pA
 
         self.tau_m = tau_m  # ms
         self.tau_s = tau_s  # ms
@@ -42,7 +42,7 @@ class LIF:
         )
 
         self.Q = Q
-        self.l = l
+        self.ridge_coeff = ridge_coeff
         self.dim = min(sup.shape)
         self.enc = Q * (
             2 * torch.rand(N, self.dim, dtype=torch.float32, device=self.device) - 1
@@ -50,14 +50,12 @@ class LIF:
         self.dec = torch.zeros(size=(N, self.dim), dtype=torch.float32, device=device)
         self.Pinv = torch.eye(N, dtype=torch.float32, device=device) / l
         self.x_hat = self.dec.T @ self.r
-        # self.x_hat = torch.zeros(size=(self.dim, 1), dtype=torch.float32, device=device)
         self.x_hat_rec = torch.zeros(
             size=(self.nt, self.x_hat.size()[0]), device=device
         )
         self.sup = torch.tensor(sup, dtype=torch.float32, device=device)
 
     def __reinit__(self):
-        self.Pinv = torch.eye(self.N, dtype=torch.float32, device=self.device) / self.l
         self.v = torch.zeros(size=(self.N, 1), dtype=torch.float32, device=self.device)
         self.r = torch.zeros(size=(self.N, 1), dtype=torch.float32, device=self.device)
         self.x_hat_rec = torch.zeros(

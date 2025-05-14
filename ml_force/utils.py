@@ -12,5 +12,3 @@ def minmax_transform(signal, zero_mean: bool = False):
     if zero_mean:
         minmaxed -= minmaxed.mean(axis=0)
     return minmaxed
-
-
