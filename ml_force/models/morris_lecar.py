@@ -101,8 +101,8 @@ class MorrisLecar:
             The inhibitory resting potential in [mV], by default -75
         Q : float, optional
             The encoding strength coefficient, by default 2
-        l : float, optional
-            The learning strength for FORCE training, by default 2.0
+        ridge_coeff : float, optional
+            The learning strength for FORCE training, by default 1.0
         gbar : float, optional
             Synaptic conductance for all neurons in [nS], by default 1
         """
@@ -152,11 +152,11 @@ class MorrisLecar:
         self.time_cpu = self.time.cpu()
         self.exp = None
         # Encoding and decoding
-        self.l = l
+        self.ridge_coeff = ridge_coeff
         dim = np.min(self.sup.shape)
         self.dec = torch.zeros(size=(self._N, dim), dtype=torch.float32, device=self.device)
         self.eta = Q * (2 * torch.rand(self._N, dim, dtype=torch.float32, device=self.device) - 1)
-        self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.l
+        self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.ridge_coeff
         self.x_hat = self.dec.T @ self.s
         self.x_hat_rec = torch.zeros(
             size=(self._nt, self.x_hat.size()[0]),
@@ -166,7 +166,6 @@ class MorrisLecar:
         self.ipsc = torch.zeros(size=(self._N, 1), dtype=torch.float32, device=self.device)
 
     def __reinit__(self):
-        self.Pinv = torch.eye(self._N, dtype=torch.float32, device=self.device) / self.l
         self.x_hat_rec = torch.zeros(
             size=(self._nt, self.x_hat.size()[0]),
             dtype=torch.float32,
@@ -184,16 +183,10 @@ class MorrisLecar:
 
     def tau_n(self) -> torch.Tensor:
         cosh = torch.cosh((self.v - self._v3) / (2 * self._v4))
-        # if cosh.isnan().any():
-        #     raise ValueError("Found NaN value in tau_n")
-
         return 1 / (self._phi * cosh)
 
     def T(self):
         self.exp = torch.exp(-(self.v - self._v_t) / self._k_p)
-        # if self.exp.isnan().any():
-        #     raise ValueError("Found NaN value in exp")
-
         return self._t_max / (1 + self.exp)
 
     def s_dot(self):
@@ -212,18 +205,12 @@ class MorrisLecar:
     def v_dot(self, closed_loop: bool = True):
         self.calc_ipsc()  # Calculate the new post-synaptic potential
         I_L = -self._g_L * (self.v - self._E_L)
-        # self.check_nan(I_L, "Leak current")
         I_K = -self._g_K * self.n * (self.v - self._E_K)
-        # self.check_nan(self.n, "n")
-        # self.check_nan(I_K, "Potassium current")
         I_Ca = -self._g_Ca * self.m_ss() * (self.v - self._E_Ca)
-        # self.check_nan(I_Ca, "Calcium current")
         encoding = 0
         if closed_loop:
             encoding = self.eta @ self.x_hat
 
-        # self.check_nan(encoding, "encoding")
-        # print(encoding.shape)
         return (self._BIAS + I_L + I_K + I_Ca + self.ipsc + encoding) / self._C
 
     def _mask_inf(self, inp: torch.Tensor, inf_value: float = 1e5, mask_value=1e5):
@@ -246,12 +233,11 @@ class MorrisLecar:
 
         if voltage_bound is not None:
             self._mask_inf(self.v, voltage_bound, voltage_bound)
-        # self._mask_inf(self.n, 1, 1)
 
         self.x_hat = self.dec.T @ self.s
 
         if self.v.isnan().any():
-            raise RuntimeError("NaN value encountered during iteration.")
+            raise ValueError("NaN value encountered during iteration.")
 
     def _update_rls_plot(self, i):
         self.rls_line.set_xdata(self.time_cpu[:i])
@@ -285,7 +271,6 @@ class MorrisLecar:
 
     def _update_decoder_plot(self, decoder_trace, time_index):
         for line_index in range(len(self.decoder_lines)):
-            # signal = self._standardize(decoder_trace[:, line_index], line_index)
             self.decoder_lines[line_index].set_xdata(self.time_cpu[:time_index])
             self.decoder_lines[line_index].set_ydata(decoder_trace[:, line_index])
         self.decoder_ax.set_xlim(0, self.time_cpu[time_index])
@@ -364,7 +349,6 @@ class MorrisLecar:
         self._decoder_plot_init(decoder_trace_cpu, rls_step)
         plt.show(block=False)
 
-
     def render(
         self,
         rls_start,
@@ -442,30 +426,25 @@ class MorrisLecar:
             dtype=torch.float32,
             device=self.device,
         )
-
         # Setup for RLS -- convert ms to number of time steps
         nt_train_start = int(rls_start // self._dt)
         nt_train_stop = int(rls_stop // self._dt)
-
         # Setup Plots
         if live_plot:
             plt_interval = int(plt_interval // self._dt)
-            self._init_plots(voltage_trace.cpu(), 
+            self._init_plots(voltage_trace.cpu(),
                              decoder_trace.cpu(), rls_step)
-
         # Main loop
         for i in tqdm(range(self._nt)):
             try:
                 self.euler_step()
-
-            except Exception as e:
+            except ValueError as e:
                 print(f"Error encountered. Looped stopped at iteration i={i}")
                 print(e)
                 break
 
             voltage_trace[i] = self.v[neurons, 0]
             decoder_trace[i] = self.dec[neurons, -1]
-
             self.x_hat_rec[i] = self.x_hat[:, 0]
 
             if live_plot and (i % plt_interval == 1):
@@ -473,13 +452,13 @@ class MorrisLecar:
                 self._update_neural_plot(voltage_trace[:i].cpu(), i)
                 self._update_decoder_plot(decoder_trace[:i].cpu(), i)
 
-            if i > rls_start and i < rls_stop:
-                if i % rls_step == 1:
-                    self.rls_ff(i, ff_coeff)
+            if i > nt_train_start and i < nt_train_stop and i % rls_step == 1:
+                self.rls_ff(i, ff_coeff)
+
+        if save_dir is None:
+            save_dir = os.getcwd()
         if live_plot:
             try:
-                if save_dir is None:
-                    save_dir = os.getcwd()
                 self._save_live_plots(save_dir=os.path.join(save_dir, "plots"))
             except Exception as e:
                 print("Failed to Save plots.\n", e)
@@ -500,30 +479,6 @@ class MorrisLecar:
         error = self.x_hat - self.sup[i].reshape(-1, 1)
         self.Pinv = (self.Pinv - k @ (u.T)) / ff_coeff
         self.dec -= k @ error.T
-
-    def _train(self, rls_stop: float, rls_step: int, transient_time: float = 200):
-        rls_stop = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
-        nt = int(transient_time // self._dt)  # Transform from [ms] to # of time steps
-        # Run the reservoir for a transient time
-        print("Transient Time:")
-        for i in tqdm(range(nt)):
-            self.euler_step()
-
-        # Run the main training loop
-        print("Training time:")
-        for i in tqdm(range(rls_stop)):
-            self.euler_step()
-            self.x_hat_rec[i] = self.x_hat[:, 0]
-
-            if i % rls_step == 1:
-                self.rls_ff(i)
-
-    def _infer(self, rls_stop: float) -> None:
-        test_start = int(rls_stop // self._dt)  # Transform from [ms] to # of time steps
-
-        for i in tqdm(range(test_start, self._nt)):
-            self.euler_step()
-            self.x_hat_rec[i] = self.x_hat[:, 0]
 
     @classmethod
     def _standardize(self, signal: torch.Tensor, i: int):
@@ -576,7 +531,7 @@ class MorrisLecarCurrent(MorrisLecar):
         E_AMPA: float = 0,
         E_GABA: float = -75,
         Q: float = 100,
-        l: float = 1e-5,
+        ridge_coeff: float = 1.0,
         gbar: float = 1,
         w_rand: float = 0.0,
         device: torch.device = torch.device("cpu"),
@@ -640,43 +595,42 @@ class MorrisLecarCurrent(MorrisLecar):
             The inhibitory resting potential in [mV], by default -75
         Q : float, optional
             The encoding strength coefficient, by default 2
-        l : float, optional
-            The learning strength for FORCE training, by default 2.0
+        ridge_coeff : float, optional
+            Ridge regression coefficient for the RLS algorithm
         gbar : float, optional
             Synaptic conductance for all neurons in [nS], by default 1
         """
         # Morris Lecar model parameters
         super().__init__(
-            supervisor,
-            dt,
-            T,
-            BIAS,
-            Ne,
-            Ni,
-            C,
-            g_L,
-            g_K,
-            g_Ca,
-            E_L,
-            E_K,
-            E_Ca,
-            v1,
-            v2,
-            v3,
-            v4,
-            phi,
-            a_r,
-            a_d,
-            v_t,
-            k_p,
-            t_max,
-            E_AMPA,
-            E_GABA,
-            Q,
-            l,
-            gbar,
-            w_rand,
-            device,
+            supervisor=supervisor,
+            dt=dt,
+            T=T,
+            BIAS=BIAS,
+            Ne=Ne,
+            Ni=Ni,
+            C=C,
+            g_L=g_L,
+            g_K=g_K,
+            g_Ca=g_Ca,
+            E_L=E_L,
+            E_K=E_K,
+            E_Ca=E_Ca,
+            v1=v1,
+            v2=v2,
+            v3=v3,
+            v4=v4,
+            phi=phi,
+            a_r=a_r,
+            a_d=a_d,
+            v_t=v_t,
+            k_p=k_p,
+            t_max=t_max,
+            E_AMPA=E_AMPA,
+            E_GABA=E_GABA,
+            Q=Q,
+            ridge_coeff=ridge_coeff,
+            gbar=gbar,
+            device=device,
         )
 
         # Network connections -- Normal Distribution

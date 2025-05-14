@@ -1,4 +1,3 @@
-import numpy as np
 import pytest
 
 from ml_force import HyperChaoticAttractor, LorenzAttractor, VanDerPol
