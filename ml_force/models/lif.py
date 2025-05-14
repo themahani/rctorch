@@ -48,7 +48,7 @@ class LIF:
             2 * torch.rand(N, self.dim, dtype=torch.float32, device=self.device) - 1
         )
         self.dec = torch.zeros(size=(N, self.dim), dtype=torch.float32, device=device)
-        self.Pinv = torch.eye(N, dtype=torch.float32, device=device) / l
+        self.Pinv = torch.eye(N, dtype=torch.float32, device=device) / ridge_coeff
         self.x_hat = self.dec.T @ self.r
         self.x_hat_rec = torch.zeros(
             size=(self.nt, self.x_hat.size()[0]), device=device

@@ -410,7 +410,7 @@ class MorrisLecar:
         -------
         tuple of torch.Tensor
             A tuple containing:
-              - random_neuron: A tensor containing the indices of the randomly selected neurons.
+              - neurons: A tensor containing the indices of the randomly selected neurons.
               - voltage_trace: A tensor containing the recorded voltage traces. Its shape is
                 (number of time steps, n_neurons) if save_all is False, or (number of time steps, total neurons)
                 if save_all is True.
@@ -484,7 +484,7 @@ class MorrisLecar:
             except Exception as e:
                 print("Failed to Save plots.\n", e)
 
-        return random_neuron.cpu(), voltage_trace.cpu(), decoder_trace.cpu()
+        return neurons.cpu(), voltage_trace.cpu(), decoder_trace.cpu()
 
     def rls(self, i):
         """Run the system with the force method and update the decoder weights."""
