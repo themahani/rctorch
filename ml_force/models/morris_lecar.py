@@ -358,7 +358,7 @@ class MorrisLecar:
         ff_coeff: float = 1.0,
         n_neurons: int = 10,
         save_all: bool = False,
-        save_dir: str = None
+        save_dir: str = None,
     ):
         """
         Run the system simulation with the force method.
@@ -431,8 +431,7 @@ class MorrisLecar:
         # Setup Plots
         if live_plot:
             plt_interval = int(plt_interval // self._dt)
-            self._init_plots(voltage_trace.cpu(),
-                             decoder_trace.cpu(), rls_step)
+            self._init_plots(voltage_trace.cpu(), decoder_trace.cpu(), rls_step)
         # Main loop
         for i in tqdm(range(self._nt)):
             try:

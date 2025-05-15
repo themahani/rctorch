@@ -44,23 +44,17 @@ class LIF:
         self.Q = Q
         self.ridge_coeff = ridge_coeff
         self.dim = min(sup.shape)
-        self.enc = Q * (
-            2 * torch.rand(N, self.dim, dtype=torch.float32, device=self.device) - 1
-        )
+        self.enc = Q * (2 * torch.rand(N, self.dim, dtype=torch.float32, device=self.device) - 1)
         self.dec = torch.zeros(size=(N, self.dim), dtype=torch.float32, device=device)
         self.Pinv = torch.eye(N, dtype=torch.float32, device=device) / ridge_coeff
         self.x_hat = self.dec.T @ self.r
-        self.x_hat_rec = torch.zeros(
-            size=(self.nt, self.x_hat.size()[0]), device=device
-        )
+        self.x_hat_rec = torch.zeros(size=(self.nt, self.x_hat.size()[0]), device=device)
         self.sup = torch.tensor(sup, dtype=torch.float32, device=device)
 
     def __reinit__(self):
         self.v = torch.zeros(size=(self.N, 1), dtype=torch.float32, device=self.device)
         self.r = torch.zeros(size=(self.N, 1), dtype=torch.float32, device=self.device)
-        self.x_hat_rec = torch.zeros(
-            size=(self.nt, self.x_hat.size()[0]), device=self.device
-        )
+        self.x_hat_rec = torch.zeros(size=(self.nt, self.x_hat.size()[0]), device=self.device)
 
     def r_dot(self):
         return -self.r / self.tau_s
