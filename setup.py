@@ -8,7 +8,7 @@ setup(
     version="0.1.0",
     author="Ali Mahani",
     author_email="ali.a.mahani@zoho.com",
-    description="Morris-Lecar neural networks with force learning",
+    description="Morris-Lecar reservoir implementation with force learning",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/themahani/ml-force",
