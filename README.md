@@ -1,11 +1,21 @@
+[![codecov](https://codecov.io/gh/themahani/ml-force/graph/badge.svg?token=7UXVQC69IP)](https://codecov.io/gh/themahani/ml-force)
+
 # ML-Force
 
 ML-Force is a Python package implementing Morris-Lecar neural networks with force learning.
 
 ## Installation
 
+### Via pip
 ```bash
 pip install ml-force
+```
+
+### Via Git
+```bash
+git clone https://github.com/themahani/ml-force.git
+cd ml-force
+pip install -e .    # Install in editable mode
 ```
 
 ## Usage
@@ -16,7 +26,8 @@ from ml_force import MorrisLecar, MorrisLecarCurrent
 # Initialize network
 ml = MorrisLecarCurrent(
     supervisor=signal,
-    N=500,
+    Ne=500,
+    Ni=500,
     T=1000,
     dt=0.05
 )
