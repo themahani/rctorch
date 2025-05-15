@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 import torch
 
-from ml_force import MorrisLecar, MorrisLecarCurrent, z_transform
+from ml_force.models import MorrisLecar, MorrisLecarCurrent
+from ml_force.utils import z_transform
 
 
 @pytest.fixture
@@ -15,9 +16,11 @@ def supervisor():
 
 @pytest.fixture
 def model_params(supervisor):
-    N = 100
-    dt = 0.1
-    T = 1000
+    Ne = 100
+    Ni = 100
+    N = Ne + Ni
+    dt = 0.05
+    T = 200
     current = np.ones((N, 1)) * 75
 
     return {
@@ -25,25 +28,28 @@ def model_params(supervisor):
         "dt": dt,
         "T": T,
         "BIAS": current,
-        "N": N,
+        "Ne": Ne,
+        "Ni": Ni,
         "device": torch.device("cpu"),
     }
 
 
 def test_morris_lecar_initialization(model_params):
     model = MorrisLecar(**model_params)
-    assert model.v.shape == (model_params["N"], 1)
-    assert model.s.shape == (model_params["N"], 1)
-    assert model.n.shape == (model_params["N"], 1)
-    assert model.dec.shape == (model_params["N"], 1)
+    N = model_params["Ne"] + model_params["Ni"]
+    assert model.v.shape == (N, 1)
+    assert model.s.shape == (N, 1)
+    assert model.n.shape == (N, 1)
+    assert model.dec.shape == (N, model_params["supervisor"].shape[1])
 
 
 def test_morris_lecar_current_initialization(model_params):
     model = MorrisLecarCurrent(**model_params)
-    assert model.v.shape == (model_params["N"], 1)
-    assert model.s.shape == (model_params["N"], 1)
-    assert model.n.shape == (model_params["N"], 1)
-    assert model.dec.shape == (model_params["N"], 1)
+    N = model_params["Ne"] + model_params["Ni"]
+    assert model.v.shape == (N, 1)
+    assert model.s.shape == (N, 1)
+    assert model.n.shape == (N, 1)
+    assert model.dec.shape == (N, model_params["supervisor"].shape[1])
 
 
 def test_z_transform():
@@ -69,8 +75,8 @@ def test_morris_lecar_euler_step(model_params):
 def test_morris_lecar_render(model_params):
     model = MorrisLecar(**model_params)
     render_args = {
-        "rls_start": 100,
-        "rls_stop": 800,
+        "rls_start": 50,
+        "rls_stop": 150,
         "rls_step": 20,
         "live_plot": False,
         "plt_interval": 100,
@@ -80,6 +86,6 @@ def test_morris_lecar_render(model_params):
 
     neurons, v_trace, dec_trace = model.render(**render_args)
 
-    assert neurons.shape[0] == render_args["n_neurons"]
-    assert v_trace.shape[1] == render_args["n_neurons"]
-    assert dec_trace.shape[1] == render_args["n_neurons"]
+    assert neurons.numpy().shape[0] == render_args["n_neurons"]
+    assert v_trace.numpy().shape[1] == render_args["n_neurons"]
+    assert dec_trace.numpy().shape[1] == render_args["n_neurons"]

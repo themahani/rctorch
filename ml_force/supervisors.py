@@ -10,7 +10,7 @@ class VanDerPol:
     def __init__(self, T: float, dt: float, mu: float, tau: float, x0: float = 1, y0: float = 1) -> None:
         self.T = T
         self.dt = dt
-        self.nt = round(self.T // self.dt)
+        self.nt = round(self.T / self.dt)
         self.data = np.zeros(shape=(2, self.nt))
         self.mu = mu
         self.tau = tau
@@ -25,7 +25,7 @@ class VanDerPol:
 
     def generate(self, transient_time: float = 200):
         if transient_time > 0.0:
-            trans_nt = round(transient_time // self.dt)
+            trans_nt = round(transient_time / self.dt)
             for i in range(trans_nt):
                 self._x += self._x_dot(self._x, self._y) * self.dt * self.tau
                 self._y += self._y_dot(self._x, self._y) * self.dt * self.tau
@@ -53,7 +53,7 @@ class LorenzAttractor:
         # Time related
         self.T = T
         self.dt = dt
-        self.nt = round(self.T // self.dt)
+        self.nt = round(self.T / self.dt)
         self.data = np.zeros(shape=(3, self.nt))
         self.state = init
         self.tau = tau  # Integration time constant
@@ -72,7 +72,7 @@ class LorenzAttractor:
 
     def generate(self, transient_time: float = 0.0):
         if transient_time > 0.0:
-            trans_nt = round(transient_time // self.dt)
+            trans_nt = round(transient_time / self.dt)
             for i in range(trans_nt):
                 self.state += self.dt * self._x_dot() * self.tau
 
@@ -88,7 +88,7 @@ class HyperChaoticAttractor:
         # Time related
         self.T = T
         self.dt = dt
-        self.nt = round(self.T // self.dt)
+        self.nt = round(self.T / self.dt)
         self.data = np.zeros(shape=(4, self.nt))
         self.state = np.array([-10.0, -6.0, 0.0, 10.0])
         self.tau = tau  # Integration time constant
@@ -119,7 +119,7 @@ def main():
     tau = 2e-2
     T = 10000
     dt = 1e-2
-    nt = int(T // dt)
+    nt = round(T / dt)
 
     sup = HyperChaoticAttractor(T=T, dt=dt, tau=tau)
     time = np.linspace(0, T, nt)

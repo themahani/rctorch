@@ -416,12 +416,12 @@ class MorrisLecar:
             neurons = torch.arange(0, self._N).to(self.device)
 
         voltage_trace = torch.zeros(
-            size=(self.time.size()[0], neurons.size[0]),
+            size=(self.time.size()[0], neurons.size()[0]),
             dtype=torch.float32,
             device=self.device,
         )
         decoder_trace = torch.zeros(
-            size=(self.time.size()[0], neurons.size[0]),
+            size=(self.time.size()[0], neurons.size()[0]),
             dtype=torch.float32,
             device=self.device,
         )

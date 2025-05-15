@@ -12,21 +12,21 @@ def test_van_der_pol(time_params):
     vdp = VanDerPol(**time_params, mu=1.0)
     data = vdp.generate()
     assert data.shape[0] == 2
-    assert data.shape[1] == int(time_params["T"] / time_params["dt"]) + 1
+    assert data.shape[1] == round(time_params["T"] / time_params["dt"])
 
 
 def test_lorenz_attractor(time_params):
     la = LorenzAttractor(**time_params)
     data = la.generate()
     assert data.shape[0] == 3
-    assert data.shape[1] == int(time_params["T"] / time_params["dt"]) + 1
+    assert data.shape[1] == round(time_params["T"] / time_params["dt"])
 
 
 def test_hyper_chaotic_attractor(time_params):
     hca = HyperChaoticAttractor(**time_params)
     data = hca.generate()
     assert data.shape[0] == 4
-    assert data.shape[1] == int(time_params["T"] / time_params["dt"]) + 1
+    assert data.shape[1] == round(time_params["T"] / time_params["dt"])
 
 
 def test_van_der_pol_transient(time_params):
@@ -34,7 +34,7 @@ def test_van_der_pol_transient(time_params):
     trans_time = 200
     data = vdp.generate(transient_time=trans_time)
     assert data.shape[0] == 2
-    assert data.shape[1] == int(time_params["T"] / time_params["dt"]) + 1
+    assert data.shape[1] == round(time_params["T"] / time_params["dt"])
 
 
 def test_lorenz_attractor_params(time_params):
