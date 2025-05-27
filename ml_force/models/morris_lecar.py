@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-import os
 from typing import Union
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
-from tqdm import tqdm
 
 from .base import SNNBase
 
@@ -216,12 +213,12 @@ class MorrisLecar(SNNBase):
             raise ValueError("Found NaN value in " + name)
 
     def mem_dot(self, input_: torch.Tensor) -> torch.Tensor:
-        self.calc_ipsc()  # Calculate the new post-synaptic potential
+        ps_current = self.calc_ipsc()  # Calculate the new post-synaptic potential
         I_L = -self._g_L * (self.mem - self._v_L)
         I_K = -self._g_K * self.n * (self.mem - self._v_K)
         I_Ca = -self._g_Ca * self.m_ss() * (self.mem - self._v_Ca)
 
-        return (self.BIAS + I_L + I_K + I_Ca + input_) / self._C
+        return (self.BIAS + I_L + I_K + I_Ca + input_ + ps_current) / self.C
 
     def forward(self, input_: torch.Tensor) -> torch.Tensor:
         dv = self._dt * self.mem_dot(input_)
