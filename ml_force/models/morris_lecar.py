@@ -66,13 +66,13 @@ class MorrisLecar(SNNBase):
 
     Attributes
     ----------
-    mem : torch.Tensor, shape (N, 1)
+    mem : torch.Tensor (N, 1)
         Membrane potential of the neurons
-    n : torch.Tensor, shape (N, 1)
+    n : torch.Tensor (N, 1)
         Potassium-gating variable
-    s : torch.Tensor, shape (N, 1)
+    s : torch.Tensor (N, 1)
         Synaptic-gating variable
-    w : torch.Tensor, shape (N, N)
+    w : torch.Tensor (N, N)
         Synaptic coupling of neurons within the reservoir
 
     Methods
@@ -235,13 +235,13 @@ class MorrisLecarCurrent(MorrisLecar):
 
     Attributes
     ---------
-    mem : torch.Tensor, shape (N, 1)
+    mem : torch.Tensor (N, 1)
         Membrane potential of the neurons
-    n : torch.Tensor, shape (N, 1)
+    n : torch.Tensor (N, 1)
         Potassium-gating variable
-    s : torch.Tensor, shape (N, 1)
+    s : torch.Tensor (N, 1)
         Synaptic-gating variable
-    w : torch.Tensor, shape (N, N)
+    w : torch.Tensor (N, N)
         Synaptic coupling of neurons within the reservoir
 
     Notes
