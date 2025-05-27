@@ -2,11 +2,7 @@
 This module contains the implementation of the base `Reservoir`
 """
 
-from typing import Union
-
 import torch
-from numpy import dtype
-from numpy.random import standard_exponential
 from tqdm import tqdm
 
 from .models.base import SNNBase
@@ -87,7 +83,7 @@ class Reservoir(torch.nn.Module):
         return y_hat
 
     def fit_force(
-        self, x: torch.Tensor, nt_transient: int = 500, ridge_reg: float = 1.0, rls_step: int = 20, ff_coeff: flaot = 1.0
+        self, x: torch.Tensor, nt_transient: int = 500, ridge_reg: float = 1.0, rls_step: int = 20, ff_coeff: float = 1.0
     ) -> torch.Tensor:
         """
         Parameters
@@ -103,12 +99,12 @@ class Reservoir(torch.nn.Module):
         """
         if self.n_input != self.n_output:
             raise ValueError("When using the FORCE learning method, `n_input` must equal `n_output`.")
-
-        nt = x.size(0)
+        # Run transient period
         print("Transient Period")
         for _ in tqdm(range(nt_transient)):
             self.model.euler_step()
-
+        # Run main training loop
+        nt = x.size(0)
         x_hat_rec = torch.zeros((nt, self.model._N), dtype=self.dtype, device=self.device())
         if self.Pinv is None:
             self.Pinv = torch.eye(self.model._N, dtype=self.dtype, device=self.device) / ridge_reg
@@ -133,10 +129,17 @@ class Reservoir(torch.nn.Module):
             Input of the model
         x_hat: torch.Tensor (n_input, 1)
             Prediction of the model
-        state: torch.Tensor (model._N, 1)
+        state: torch.Tensor (model.N, 1)
             Current State of the reservoir
         ff_coeff: float, default 1.0
             Forgetting factor for the RLS algorithm, defaults to 1.0 resulting in infinite memory
+
+        Raises
+        ------
+        ValueError
+            If the shapes don't match for the attributes involved.
+        TypeError
+            If Pinv is not initialized correctly.
         """
         if x.size(0) != self.n_input or x_hat.size(0) != self.n_input:
             raise ValueError("`x_hat`, or `x` should have matching first dimension of `n_input`.")
@@ -145,10 +148,11 @@ class Reservoir(torch.nn.Module):
             raise ValueError("Model state should have a first dimension of `model._N`")
 
         if self.Pinv is None:
-            raise ValueError("`Pinv` is set to None.")
+            raise TypeError("`Pinv` is set to None.")
 
         u = self.Pinv @ state
         k = u / (ff_coeff + state.t() @ u)
         error = x_hat - x
         self.Pinv = (self.Pinv - k @ (u.T)) / ff_coeff
         self.W_out -= k @ error.T
+        return error
