@@ -1,9 +1,8 @@
 import torch
-from torch import Tensor
-from torch.nn import Module
+import torch.nn as nn
 
 
-class SNNBase(Module):
+class SNNBase(nn.Module):
 
     __constants__ = ["n_hidden"]
     n_hidden: int
@@ -20,7 +19,7 @@ class SNNBase(Module):
         dtype: torch.dtype = torch.float32,
     ) -> None:
         super().__init__()
-        factory_kwargs = {"device": device, "dtype": dtype}
+        factory_kwargs = nn.factory_kwargs({"device": device, "dtype": dtype})
         self.n_hidden = n_hidden
         self.dt = dt
 
@@ -30,7 +29,7 @@ class SNNBase(Module):
     def _init_mem(self) -> None:
         self.mem = torch.zeros(size=(self.n_hidden, 1))  # NOTE: Might have to add factory_kwargs
 
-    def mem_dot(self, input_: Tensor) -> Tensor:
+    def mem_dot(self, input_: torch.Tensor) -> torch.Tensor:
         r"""Calculate the first time derivative of the membrane potential.
         :param input_: Input current
         :type input_: torch.Tensor
@@ -41,7 +40,7 @@ class SNNBase(Module):
         """
         return -self.mem + input_
 
-    def forward(self, input_: Tensor) -> Tensor:
+    def forward(self, input_: torch.Tensor) -> torch.Tensor:
         r"""
         :param input_: Input tensor for the current time step.
         :type input_: torch.Tensor, shape (`nt`, )
@@ -55,3 +54,13 @@ class SNNBase(Module):
         # Example update for `mem`
         self.mem += self.dt * self.mem_dot(input_)
         return self.mem
+
+    def state(self) -> torch.Tensor:
+        r"""Return the state variable of the model.
+
+        Returns
+        -------
+        torch.Tensor
+            The state variable of the model.
+        """
+        return self.r.clone()
