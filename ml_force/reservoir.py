@@ -12,15 +12,13 @@ class Reservoir(torch.nn.Module):
     def __init__(self, model_cls: SNNBase, n_input: int, n_output: int, w_in_amp: float = 200.0, **model_kwargs) -> None:
         super(Reservoir, self).__init__()
         self.model = model_cls(**model_kwargs)
+        self.n_hidden = self.model.N
         self.n_input = n_input
         self.n_output = n_output
-        self.dtype = self.model.dtype
-        self.device = self.model.device
-
         # Input and Output layers
-        self.W_in = w_in_amp * (2 * torch.rand((self.model._N, self.n_input), dtype=self.dtype, device=self.device) - 1)
+        self.W_in = w_in_amp * (2 * torch.rand((self.model.N, self.n_input), **self.model.factory_kwargs) - 1)
         self.W_out = torch.nn.Parameter(
-            torch.zeros((self.model._N, self.n_output), dtype=self.dtype, device=self.device), requires_grad=False
+            torch.zeros((self.model.N, self.n_output), **self.model.factory_kwargs), requires_grad=False
         )
         self.Pinv = None
 
@@ -37,22 +35,21 @@ class Reservoir(torch.nn.Module):
             raise ValueError("In closed loop model, `n_input` must equal `n_output`.")
 
         # Record the state of the system
-        s_rec = torch.zeros((nt, self.n_hidden), dtype=self.dtype, device=self.mlc.device)
+        s_rec = torch.zeros((nt, self.n_hidden), **self.model.factory_kwargs)
         # Transient Period
         print(f"Transient Period:")
         for i in tqdm(range(nt_transient)):
-            self.model.euler_step()
+            self.model.forward(0)
         # Prepare the input signal current
         input_current = 0.0
-        if not closed_loop:
-            input_current = x @ self.W_in.t()
-
         for i in tqdm(range(nt)):
             s_rec[i] = self.model.state().squeeze()  # Record the SNN state
             if closed_loop:
-                x_hat = self.W_out.t() @ s_rec[i].unsqueeze(1)  # Feedback loop
+                x_hat = self.W_out.t() @ s_rec[i].reshape(self.n_hidden, 1)  # Feedback loop
                 input_current = self.W_in @ x_hat
-            self.model.euler_step(input_current=input_current)
+            else:
+                input_current = self.W_in @ x[i].reshape(self.n_input, 1)
+            self.model.forward(input_=input_current)
 
         return s_rec
 
@@ -67,18 +64,18 @@ class Reservoir(torch.nn.Module):
         Parameters
         ----------
         x: torch.Tensor (nt, n_input)
-            Desc
+            Input data
         y: torch.Tensor (nt, n_output)
-            Desc
+            Output data
         nt_transient: int default 500
-            Desc
+            Number of time steps to evolve the reservoir in transient mode (without input)
         ridge_reg: float, default 1e-5
-            Desc
+            Ridge regression coefficient
         """
         s_rec = self.forward(x, nt_transient=nt_transient, closed_loop=False)  # forward task for training is open loop
-        Pinv = torch.linalg.pinv(s_rec.T @ s_rec + ridge_reg * torch.eye(self.n_hidden, device=self.device, dtype=self.dtype))
+        Pinv = torch.linalg.pinv(s_rec.T @ s_rec + ridge_reg * torch.eye(self.n_hidden, **self.model.factory_kwargs))
         self.W_out.data = Pinv @ s_rec.T @ y
-        y_hat = y @ self.W_out
+        y_hat = s_rec @ self.W_out
 
         return y_hat
 
@@ -102,12 +99,12 @@ class Reservoir(torch.nn.Module):
         # Run transient period
         print("Transient Period")
         for _ in tqdm(range(nt_transient)):
-            self.model.euler_step()
+            self.model.forward()
         # Run main training loop
         nt = x.size(0)
-        x_hat_rec = torch.zeros((nt, self.model._N), dtype=self.dtype, device=self.device())
+        x_hat_rec = torch.zeros((nt, self.model.N), **self.model.factory_kwargs)
         if self.Pinv is None:
-            self.Pinv = torch.eye(self.model._N, dtype=self.dtype, device=self.device) / ridge_reg
+            self.Pinv = torch.eye(self.model.N, **self.model.factory_kwargs) / ridge_reg
 
         x_hat = self.W_out.t() @ self.model.state()
         for i in tqdm(range(nt)):
@@ -115,7 +112,7 @@ class Reservoir(torch.nn.Module):
             x_hat = self.W_out.t() @ state
             x_hat_rec[i] = x_hat.squeeze()
             input_current = self.W_in @ x_hat
-            self.model.euler_step(input_current=input_current)
+            self.model.forward(input_current=input_current)
 
             if i % rls_step == 0:
                 self._rls(x[i].unsqueeze(1), x_hat, state, ff_coeff)
@@ -144,8 +141,8 @@ class Reservoir(torch.nn.Module):
         if x.size(0) != self.n_input or x_hat.size(0) != self.n_input:
             raise ValueError("`x_hat`, or `x` should have matching first dimension of `n_input`.")
 
-        if state.size(0) != self.model._N:
-            raise ValueError("Model state should have a first dimension of `model._N`")
+        if state.size(0) != self.model.N:
+            raise ValueError("Model state should have a first dimension of `model.N`")
 
         if self.Pinv is None:
             raise TypeError("`Pinv` is set to None.")

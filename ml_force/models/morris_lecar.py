@@ -79,6 +79,8 @@ class MorrisLecar(SNNBase):
     -------
     forward(ipnut_)
         Evolve the model for 1 time step.
+    state()
+        Return the state of the model. In our case the Synaptic-gating variable `s`
 
     Notes
     -----
@@ -226,6 +228,9 @@ class MorrisLecar(SNNBase):
         self.check_nan(self.mem, "mem")
 
         return self.s
+
+    def state(self):
+        return self.s.clone()
 
 
 class MorrisLecarCurrent(MorrisLecar):

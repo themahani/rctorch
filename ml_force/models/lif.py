@@ -25,7 +25,6 @@ class LIF(SNNBase):
         self.Ne = Ne
         self.Ni = Ni
         self.N = Ne + Ni
-        self.device = device
         self.BIAS = BIAS  # pA
 
         self.tau_m = tau_m  # ms
@@ -54,3 +53,6 @@ class LIF(SNNBase):
         self.r[mask] += 1 / self.tau_s
 
         return self.r
+
+    def state(self) -> torch.Tensor:
+        return self.r.clone()
