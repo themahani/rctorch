@@ -1,9 +1,6 @@
 import torch
 from torch import Tensor
-from torch.nn import (
-    Module,
-    Parameter,
-)
+from torch.nn import Module
 
 
 class SNNBase(Module):
@@ -19,8 +16,8 @@ class SNNBase(Module):
         self,
         n_hidden: int,
         dt: float,
-        device: torch.DeviceObjType = None,
-        dtype: torch.dtype = None,
+        device: torch.device = torch.device("cpu"),
+        dtype: torch.dtype = torch.float32,
     ) -> None:
         super().__init__()
         factory_kwargs = {"device": device, "dtype": dtype}

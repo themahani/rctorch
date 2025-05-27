@@ -204,7 +204,7 @@ class MorrisLecar(SNNBase):
         return (self.n_ss() - self.n) / self.tau_n()
 
     def calc_ipsc(self) -> torch.Tensor:
-        return -self.gbar * self.w @ ((self.mem @ self.ones) - self.E) @ self.s
+        return -self.gbar * self.w * ((self.mem @ self.ones) - self.E) @ self.s
 
     def check_nan(self, inp: torch.Tensor, name: str):
         if inp.isnan().any():
@@ -219,9 +219,9 @@ class MorrisLecar(SNNBase):
         return (self.BIAS + I_L + I_K + I_Ca + input_ + ps_current) / self.C
 
     def forward(self, input_: torch.Tensor) -> torch.Tensor:
-        dv = self._dt * self.mem_dot(input_)
-        self.n += self._dt * self.n_dot()
-        self.s += self._dt * self.s_dot()
+        dv = self.dt * self.mem_dot(input_)
+        self.n += self.dt * self.n_dot()
+        self.s += self.dt * self.s_dot()
         self.mem += dv
         self.check_nan(self.mem, "mem")
 

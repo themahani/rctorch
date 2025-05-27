@@ -10,8 +10,8 @@ from .base import SNNBase
 class LIF(SNNBase):
     def __init__(
         self,
-        N: int,
-        T,
+        Ne: int,
+        Ni: int,
         dt,
         BIAS: Union[torch.Tensor, np.ndarray, float] = 80.0,
         tau_m: float = 50,
@@ -21,11 +21,10 @@ class LIF(SNNBase):
         dtype: torch.dtype = torch.float32,
     ) -> None:
         self.factory_kwargs = nn.factory_kwargs({"device": device, "dtype": dtype})
-        self.T = T
         self.dt = dt
-        self.time = torch.arange(0, T, dt, **self.factory_kwargs)
-        self.nt = self.time.size()[0]
-        self.N = N
+        self.Ne = Ne
+        self.Ni = Ni
+        self.N = Ne + Ni
         self.device = device
         self.BIAS = BIAS  # pA
 
@@ -34,24 +33,24 @@ class LIF(SNNBase):
         self.v_th = 30  # mV
         self.v_reset = -20  # mV
 
-        self.v = torch.zeros(size=(N, 1), **self.factory_kwargs)
-        self.r = torch.zeros(size=(N, 1), **self.factory_kwargs)
+        self.mem = torch.zeros(size=(self.N, 1), **self.factory_kwargs)
+        self.r = torch.rand(size=(self.N, 1), **self.factory_kwargs)
 
         self.gbar = gbar
-        self.w = torch.tensor(np.random.normal(loc=0, scale=1 / N, size=(N, N)), **self.factory_kwargs)
+        self.w = torch.tensor(np.random.normal(loc=0, scale=1 / self.N, size=(self.N, self.N)), **self.factory_kwargs)
 
     def r_dot(self):
         return -self.r / self.tau_s
 
-    def v_dot(self, input_: torch.Tensor) -> torch.Tensor:
-        return (-self.v + self.BIAS + self.gbar * self.w @ self.r + input_) / self.tau_m
+    def mem_dot(self, input_: torch.Tensor) -> torch.Tensor:
+        return (-self.mem + self.BIAS + self.gbar * self.w @ self.r + input_) / self.tau_m
 
     def forward(self, input_: torch.Tensor) -> torch.Tensor:
-        dv = self.dt * self.v_dot(input_)
+        dv = self.dt * self.mem_dot(input_)
         self.r += self.dt * self.r_dot()
-        self.v += dv
-        mask = self.v > self.v_th
-        self.v[mask] = self.v_reset
+        self.mem += dv
+        mask = self.mem > self.v_th
+        self.mem[mask] = self.v_reset
         self.r[mask] += 1 / self.tau_s
 
         return self.r
