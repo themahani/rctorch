@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from typing import Union
 
 import numpy as np
@@ -115,7 +113,7 @@ class MorrisLecar(SNNBase):
     def __init__(
         self,
         dt: float,
-        BIAS: Union[np.ndarray, torch.Tensor, np.float64],
+        BIAS: Union[np.ndarray, torch.Tensor, float],
         Ne: int = 20,
         Ni: int = 20,
         C: float = 20,
@@ -263,7 +261,7 @@ class MorrisLecarCurrent(MorrisLecar):
     def __init__(
         self,
         dt: float,
-        BIAS: Union[np.ndarray, torch.Tensor, np.float64],
+        BIAS: Union[np.ndarray, torch.Tensor, float],
         Ne: int = 20,
         Ni: int = 20,
         C: float = 20,
@@ -292,12 +290,8 @@ class MorrisLecarCurrent(MorrisLecar):
         """
         Parameters
         ----------
-        supervisor : np.ndarray
-            The target output of the model. This is the signal the model is supposed to follow after being trained
         dt : float
             Time step for the neural networks and the supervisor in [ms].
-        T : float
-            The total simulation time of the system.
         BIAS : np.ndarray
             The input bias into all the neurons in the reservoir in [pA].
             Can be engineered.
@@ -343,10 +337,6 @@ class MorrisLecarCurrent(MorrisLecar):
             The excitatory resting potential in [mV], by default 0
         E_GABA : float, optional
             The inhibitory resting potential in [mV], by default -75
-        Q : float, optional
-            The encoding strength coefficient, by default 2
-        ridge_coeff : float, optional
-            Ridge regression coefficient for the RLS algorithm
         gbar : float, optional
             Synaptic conductance for all neurons in [nS], by default 1
         """
