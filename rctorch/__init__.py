@@ -1,18 +1,16 @@
-"""ML-Force: Morris-Lecar neural networks with force learning"""
+"""rcTorch: Reservoir computing solution using pyTorch"""
 
-from .models import LIF, MorrisLecar, MorrisLecarCurrent
+import models
+
 from .optimizers import BruteForceMesh, CoordinateDescent, ParticleSwarmOptimizer
-from .plots import plot_model
 from .reservoir import Reservoir
 from .supervisors import HyperChaoticAttractor, LorenzAttractor, VanDerPol
 from .utils import minmax_transform, z_transform
 
 __version__ = "0.1.0"
 __all__ = [
-    # Models
-    "MorrisLecar",
-    "MorrisLecarCurrent",
-    "LIF",
+    # Models sub-package
+    "models",
     # Reservoirs
     "Reservoir",
     # Transformations
@@ -26,6 +24,4 @@ __all__ = [
     "CoordinateDescent",
     "BruteForceMesh",
     "ParticleSwarmOptimizer",
-    # Plotting
-    "plot_model",
 ]
