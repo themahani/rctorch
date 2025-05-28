@@ -3,10 +3,10 @@ import pytest
 import torch
 import torch.nn as nn
 
-from ml_force import Reservoir
-from ml_force.models import LIF
-from ml_force.supervisors import LorenzAttractor
-from ml_force.utils import z_transform
+from rctorch import Reservoir
+from rctorch.models import LIF
+from rctorch.supervisors import LorenzAttractor
+from rctorch.utils import z_transform
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
 import pytest
 
-from ml_force import HyperChaoticAttractor, LorenzAttractor, VanDerPol
+from rctorch import HyperChaoticAttractor, LorenzAttractor, VanDerPol
 
 
 @pytest.fixture
