@@ -2,8 +2,8 @@ import numpy as np
 import pytest
 import torch
 
-from ml_force.models import LIF, MorrisLecar, MorrisLecarCurrent
-from ml_force.utils import z_transform
+from rctorch.models import LIF, MorrisLecar, MorrisLecarCurrent
+from rctorch.utils import z_transform
 
 
 @pytest.fixture
