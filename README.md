@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/themahani/ml-force/graph/badge.svg?token=7UXVQC69IP)](https://codecov.io/gh/themahani/ml-force)
+[![test](https://github.com/themahani/ml-force/actions/workflows/ci.yml/badge.svg)](https://github.com/themahani/ml-force)
 
 # rcTorch
 
