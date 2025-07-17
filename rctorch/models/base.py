@@ -19,12 +19,12 @@ class SNNBase(nn.Module):
         dtype: torch.dtype = torch.float32,
     ) -> None:
         super().__init__()
-        factory_kwargs = nn.factory_kwargs({"device": device, "dtype": dtype})
+        self.factory_kwargs = nn.factory_kwargs({"device": device, "dtype": dtype})
         self.n_hidden = n_hidden
         self.dt = dt
 
         # Neuron Variables
-        self.mem = torch.zeros(size=(n_hidden, 1), **factory_kwargs)
+        self.mem = torch.zeros(size=(n_hidden, 1), **self.factory_kwargs)
 
     def _init_mem(self) -> None:
         self.mem = torch.zeros(size=(self.n_hidden, 1))  # NOTE: Might have to add factory_kwargs
