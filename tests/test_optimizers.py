@@ -1,9 +1,7 @@
 import numpy as np
 import pytest
 import torch
-import torch.nn as nn
 
-from rctorch import Reservoir
 from rctorch.models import LIF
 from rctorch.optimizers import BruteForceMesh
 from rctorch.supervisors import LorenzAttractor
