@@ -79,7 +79,8 @@ class LIFDoubleExp(LIF):
         self.BIAS = BIAS  # pA
 
         self.tau_m = tau_m  # ms
-        self.tau_s = tau_s  # ms
+        self.tau_r = tau_r  # ms
+        self.tau_d = tau_d  # ms
         self.v_th = 30  # mV
         self.v_reset = -20  # mV
 
@@ -89,6 +90,7 @@ class LIFDoubleExp(LIF):
         self.gbar = gbar
         self.w = torch.tensor(np.random.normal(loc=0, scale=1 / self.N, size=(self.N, self.N)), **self.factory_kwargs)
 
+    # TODO: Implement double exponential
     def r_dot(self):
         return -self.r / self.tau_s
 
