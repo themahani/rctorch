@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pytest
 import torch
@@ -36,7 +38,7 @@ def lorenz_supervisor(model_params):
 
 @pytest.fixture
 def reservoir_params(lorenz_supervisor):
-    n_input = lorenz_supervisor.size(0)
+    n_input = lorenz_supervisor.size(1)
     n_output = n_input
     return {
         "model_cls": LIF,
@@ -57,19 +59,38 @@ def bfm_params():
 
 @pytest.fixture
 def render_kwargs(lorenz_supervisor):
+    """Return train and test kwargs for reservoirs"""
     nt_transient = 20
+    rls_step = 5
     ridge_ = 1.0
-    ff_coef = 1.0
-    return {
-        "x": lorenz_supervisor,
+    ff_coeff = 1.0
+    train_test_split = 0.5  # what ratio goes to train and the rest goes to test
+    size_ = lorenz_supervisor.size(0)
+    nt_split = int(size_ * train_test_split)  # timestep to split the train/test
+    sup_train, sup_test = lorenz_supervisor[:nt_split], lorenz_supervisor[nt_split:]
+    train_kwargs = {
+        "x": sup_train,
         "nt_transient": nt_transient,
         "ridge_reg": ridge_,
-        "ff_coef": ff_coef,
+        "ff_coeff": ff_coeff,
+        "rls_step": rls_step,
     }
+    test_kwargs = {
+        "x": sup_test,
+        "nt_transient": 0,
+        "closed_loop": True,
+    }
+    return train_kwargs, test_kwargs
 
 
 def test_bruteforcemesh(reservoir_params, model_params, render_kwargs, bfm_params):
-    model_params.pop("dt")
+    train_kwargs, test_kwargs = render_kwargs
+    # model_params.pop("dt")
     total_params = reservoir_params | model_params
-    bfm = BruteForceMesh(total_params, render_kwargs, bfm_params, num_threads=2)
-    bfm.run("./test_optimizers")
+    save_path = "./.test_cache/test_optimizers"
+    bfm = BruteForceMesh(total_params, train_kwargs, test_kwargs, bfm_params, num_threads=2)
+    bfm.run(save_path)
+    # assert os.path.exists(save_path)
+    assert os.path.exists(os.path.join(save_path, "w_in_amp_20p0000_gbar_10p0000", "reservoir_params.json"))
+    assert os.path.exists(os.path.join(save_path, "w_in_amp_20p0000_gbar_10p0000", "output_data_train.npy"))
+    assert os.path.exists(os.path.join(save_path, "w_in_amp_20p0000_gbar_10p0000", "output_data_test.npy"))
