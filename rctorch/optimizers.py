@@ -14,8 +14,6 @@ from typing import Any, Union
 import numpy as np
 import torch
 
-from rctorch import reservoir
-
 from .models import *
 from .reservoir import Reservoir
 from .utils import z_transform
@@ -23,14 +21,15 @@ from .utils import z_transform
 
 class BruteForceMesh:
     """
-    BruteForceMesh is brute-force algorithm developed with parallel computing
+    BruteForceMesh is a brute-force algorithm developed with parallel computing
     functionality. It takes a set of hyper-parameters and their ranges to run
-    through, and runs all simulations. It can run multiple threads which can be
+    through, and runs all simulations. It can run on multiple threads which can be
     configured using the `num_threads` parameter.
 
     Args:
         reservoir_kwargs (dict): Confgurations for the reservoir
-        render_args (dict): Arguments to be passed to the model's render method.
+        train_kwargs (dict): Arguments to be passed to the reservoir's `fit_force` method.
+        test_kwargs (dict): Arguments to be passed to the reservoir's `forward` method for test phase prediction.
         params (dict[str, np.ndarray]): Dictionary of parameter names and their ranges as numpy arrays.
         num_threads (int, optional): The maximum number of threads to use for parallel simulations. Defaults to 4.
     """
@@ -38,12 +37,14 @@ class BruteForceMesh:
     def __init__(
         self,
         reservoir_kwargs: dict,
-        render_args: dict,
+        train_kwargs: dict,
+        test_kwargs: dict,
         params: dict[str, np.ndarray],
         num_threads: int = 4,
     ) -> None:
         self.reservoir_kwargs = reservoir_kwargs
-        self.render_args = render_args
+        self.train_kwargs = train_kwargs
+        self.test_kwargs = test_kwargs
         self.params = params
         self.param_names = list(self.params.keys())
         self.num_threads = num_threads
@@ -102,7 +103,7 @@ class BruteForceMesh:
         Run a single simulation, save its data to a separate directory.
 
         Args:
-            model_params (dict): Parameters to initialize the model with.
+            reservoir_params (dict): Parameters to initialize the reservoir with.
             indices (tuple): Indices corresponding to the parameter combination.
             save_dir (str): The base directory to save simulation data in.
 
@@ -112,17 +113,24 @@ class BruteForceMesh:
         """
         try:
             res = Reservoir(**reservoir_params)  # Instantiate the reservoir with all the specified params
-            xhat_rec = res.fit_force(**self.render_args)
+            xhat_rec_train = res.fit_force(**self.train_kwargs)
+            xhat_rec_test = res.forward(**self.test_kwargs)
 
+        except Exception as e:
+            # print(f"Error running simulation with params {reservoir_params}: {e}")
+            raise Warning(f"Error running simulation with params {reservoir_params}: {e}")
+
+        try:
             # Construct a unique directory name based on parameters
             param_dir_name = "_".join(
                 [f"{name}_{reservoir_params[name]:.4f}".replace(".", "p") for name in self.param_names]
             )  # replace . with p for directory names
             simulation_dir = os.path.join(save_dir, param_dir_name)
             os.makedirs(simulation_dir, exist_ok=True)
-
             # Save data for this simulation
-            self._save_simulation_data(simulation_dir, reservoir_params, xhat_rec.cpu().numpy())
+            self._save_simulation_data(
+                simulation_dir, reservoir_params, xhat_rec_train.cpu().numpy(), xhat_rec_test.cpu().numpy()
+            )
 
             # Optionally, update the nested lists (if you need to access all results later in memory)
             # self._store_results_in_memory(indices, reservoir_params, xhat_rec)
@@ -130,27 +138,34 @@ class BruteForceMesh:
             print(f"Simulation with params {reservoir_params} saved to {simulation_dir}")
 
         except Exception as e:
-            print(f"Error running simulation with params {reservoir_params}: {e}")
+            raise Warning("Coudln't save simulation results...")
 
     def _save_simulation_data(
         self,
         save_path: str,
         reservoir_params: dict,
-        output_data: np.ndarray,
+        output_data_train: np.ndarray,
+        output_data_test: np.ndarray,
     ):
         """
         Save data for a single simulation to the specified path.
 
         Args:
             save_path (str): Directory to save the data in.
-            model_params (dict): Model parameters for this simulation.
-            output_data (np.ndarray): Model output data.
+            reservoir_params (dict): Model parameters for this simulation.
+            output_data_train (np.ndarray): Model output data.
+            output_data_test (np.ndarray): Model output data.
         """
         params_fp = os.path.join(save_path, "reservoir_params.json")
+        reservoir_params.pop("BIAS")
+        reservoir_params.pop("model_cls")
+        reservoir_params.pop("device")
         with open(params_fp, "w") as params_file:
-            json.dumps(reservoir_params, fp=params_file, cls=NumpyArrayEncoder)
-        output_file = os.path.join(save_path, "model_outputs.npy")
-        np.save(output_file, output_data)
+            json.dump(reservoir_params, fp=params_file, cls=NumpyArrayEncoder)
+        output_file = os.path.join(save_path, "output_data_train.npy")
+        np.save(output_file, output_data_train)
+        output_file = os.path.join(save_path, "output_data_test.npy")
+        np.save(output_file, output_data_test)
 
     def _store_results_in_memory(self, indices, reservoir_params, output_data):
         """

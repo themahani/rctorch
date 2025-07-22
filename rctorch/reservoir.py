@@ -99,10 +99,10 @@ class Reservoir(torch.nn.Module):
         # Run transient period
         print("Transient Period")
         for _ in tqdm(range(nt_transient)):
-            self.model.forward()
+            self.model.forward(input_=0)
         # Run main training loop
         nt = x.size(0)
-        x_hat_rec = torch.zeros((nt, self.model.N), **self.model.factory_kwargs)
+        x_hat_rec = torch.zeros(size=(nt, self.n_output), **self.model.factory_kwargs)
         if self.Pinv is None:
             self.Pinv = torch.eye(self.model.N, **self.model.factory_kwargs) / ridge_reg
 
@@ -112,7 +112,7 @@ class Reservoir(torch.nn.Module):
             x_hat = self.W_out.t() @ state
             x_hat_rec[i] = x_hat.squeeze()
             input_current = self.W_in @ x_hat
-            self.model.forward(input_current=input_current)
+            self.model.forward(input_=input_current)
 
             if i % rls_step == 0:
                 self._rls(x[i].unsqueeze(1), x_hat, state, ff_coeff)
