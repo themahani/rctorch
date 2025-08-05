@@ -117,7 +117,7 @@ class BruteForceMesh:
             xhat_rec_test = res.forward(**self.test_kwargs)
 
         except Exception as e:
-            # print(f"Error running simulation with params {reservoir_params}: {e}")
+            print(f"Error running simulation with params {reservoir_params}: {e}")
             raise Warning(f"Error running simulation with params {reservoir_params}: {e}")
 
         try:
@@ -187,11 +187,28 @@ class BruteForceMesh:
         set_nested_value(self.model_outputs, indices, output_data)
 
 
+def get_all_subclasses(cls):
+    """
+    Recursively finds all subclasses of a given class.
+    Returns a set to avoid duplicates in case of multiple inheritance paths.
+    """
+    all_subclasses = set()
+    for subclass in cls.__subclasses__():
+        all_subclasses.add(subclass)
+        all_subclasses.update(get_all_subclasses(subclass))
+    return all_subclasses
+
+
 class NumpyArrayEncoder(json.encoder.JSONEncoder):
     def default(self, o):
         if isinstance(o, np.ndarray):
             return o.tolist()
         if isinstance(o, torch.DeviceObjType):
+            return str(o)
+        # parse model_cls
+        all_classes = get_all_subclasses(SNNBase)
+        print(all_classes)
+        if any(isinstance(o, model_cls) for model_cls in all_classes):
             return str(o)
         return JSONEncoder.default(self, o)
 
