@@ -205,11 +205,16 @@ class NumpyArrayEncoder(json.encoder.JSONEncoder):
             return o.tolist()
         if isinstance(o, torch.DeviceObjType):
             return str(o)
-        # parse model_cls
-        all_classes = get_all_subclasses(SNNBase)
-        print(all_classes)
-        if any(isinstance(o, model_cls) for model_cls in all_classes):
-            return str(o)
+
+        elif hasattr(o, '__dict__'):
+            # Avoid serializing parent to prevent infinite loops
+            data = o.__dict__.copy()
+            if 'parent' in data:
+                data['parent'] = f"<{o.parent.__class__.__name__}>"
+            if 'children' in data:
+                data['children'] = o.children  # Let encoder recurse
+            data['__class__'] = o.__class__.__name__
+            return data
         return JSONEncoder.default(self, o)
 
 
