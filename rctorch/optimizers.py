@@ -7,6 +7,8 @@ import itertools
 import json
 import os
 import threading
+import inspect
+
 from json.encoder import JSONEncoder
 from sys import argv
 from typing import Any, Union
@@ -161,7 +163,7 @@ class BruteForceMesh:
         reservoir_params.pop("model_cls")
         reservoir_params.pop("device")
         with open(params_fp, "w") as params_file:
-            json.dump(reservoir_params, fp=params_file, cls=NumpyArrayEncoder)
+            json.dump(reservoir_params, fp=params_file, cls=KWArgsEnconder)
         output_file = os.path.join(save_path, "output_data_train.npy")
         np.save(output_file, output_data_train)
         output_file = os.path.join(save_path, "output_data_test.npy")
@@ -187,37 +189,74 @@ class BruteForceMesh:
         set_nested_value(self.model_outputs, indices, output_data)
 
 
-def get_all_subclasses(cls):
-    """
-    Recursively finds all subclasses of a given class.
-    Returns a set to avoid duplicates in case of multiple inheritance paths.
-    """
-    all_subclasses = set()
-    for subclass in cls.__subclasses__():
-        all_subclasses.add(subclass)
-        all_subclasses.update(get_all_subclasses(subclass))
-    return all_subclasses
+class KWArgsEnconder(json.JSONEncoder):
+    def default(self, obj):
+        # Handle numpy arrays
+        if isinstance(obj, np.ndarray):
+            return {
+                "__type__": "numpy.ndarray",
+                "dtype": str(obj.dtype),
+                "shape": obj.shape,
+                "data": obj.tolist()
+            }
+        
+        # Handle numpy scalars
+        if isinstance(obj, (np.generic,)):
+            return obj.item()
+
+        # Handle torch device type
+        if isinstance(obj, torch.device):
+            return {
+                "__type__": "torch.device",
+                "device_type": obj.type,
+                "index": obj.index
+            }
+        
+        if isinstance(obj, torch.dtype):
+            return {
+                "__type__": "torch.dtype",
+                "dtype": str(obj)
+            }
+
+        if isinstance(obj, torch.device.type.__class__):
+            # Rare case: direct DeviceType enum-like object
+            return {
+                "__type__": "torch.DeviceType",
+                "value": str(obj)
+            }
+        
+        # Handle classes and types
+        if inspect.isclass(obj):
+            return {
+                "__type__": "class",
+                "module": obj.__module__,
+                "name": obj.__name__
+            }
+        
+        # Handle functions or callables
+        if callable(obj):
+            return {
+                "__type__": "callable",
+                "module": obj.__module__,
+                "name": obj.__name__
+            }
+
+        # Handle objects from your custom classes
+        if hasattr(obj, "__class__") and not isinstance(obj, (str, bytes, bytearray, dict, list, tuple, int, float, bool, type(None))):
+            return {
+                "__type__": "object",
+                "class": {
+                    "module": obj.__class__.__module__,
+                    "name": obj.__class__.__name__
+                },
+                "attributes": obj.__dict__
+            }
+        
+        # Fallback to default
+        return super().default(obj)
 
 
-class NumpyArrayEncoder(json.encoder.JSONEncoder):
-    def default(self, o):
-        if isinstance(o, np.ndarray):
-            return o.tolist()
-        if isinstance(o, torch.DeviceObjType):
-            return str(o)
-
-        elif hasattr(o, '__dict__'):
-            # Avoid serializing parent to prevent infinite loops
-            data = o.__dict__.copy()
-            if 'parent' in data:
-                data['parent'] = f"<{o.parent.__class__.__name__}>"
-            if 'children' in data:
-                data['children'] = o.children  # Let encoder recurse
-            data['__class__'] = o.__class__.__name__
-            return data
-        return JSONEncoder.default(self, o)
-
-
+# TODO: Update PSO to match the new model architecture
 class ParticleSwarmOptimizer:
     def __init__(
         self,
