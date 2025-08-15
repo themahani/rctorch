@@ -163,7 +163,7 @@ class BruteForceMesh:
         reservoir_params.pop("model_cls")
         reservoir_params.pop("device")
         with open(params_fp, "w") as params_file:
-            json.dump(reservoir_params, fp=params_file, cls=KWArgsEnconder)
+            json.dump(reservoir_params, fp=params_file, cls=KWArgsEncoder)
         output_file = os.path.join(save_path, "output_data_train.npy")
         np.save(output_file, output_data_train)
         output_file = os.path.join(save_path, "output_data_test.npy")
@@ -189,7 +189,7 @@ class BruteForceMesh:
         set_nested_value(self.model_outputs, indices, output_data)
 
 
-class KWArgsEnconder(json.JSONEncoder):
+class KWArgsEncoder(json.JSONEncoder):
     def default(self, obj):
         # Handle numpy arrays
         if isinstance(obj, np.ndarray):
