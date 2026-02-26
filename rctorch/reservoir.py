@@ -36,6 +36,7 @@ class Reservoir(torch.nn.Module):
 
         # Record the state of the system
         s_rec = torch.zeros((nt, self.n_hidden), **self.model.factory_kwargs)
+        x_hat_rec = torch.zeros((nt, self.n_input), **self.model.factory_kwargs)
         # Transient Period
         print(f"Transient Period:")
         for i in tqdm(range(nt_transient)):
@@ -46,12 +47,13 @@ class Reservoir(torch.nn.Module):
             s_rec[i] = self.model.state().squeeze()  # Record the SNN state
             if closed_loop:
                 x_hat = self.W_out.t() @ s_rec[i].reshape(self.n_hidden, 1)  # Feedback loop
+                x_hat_rec[i] = x_hat.squeeze()
                 input_current = self.W_in @ x_hat
             else:
                 input_current = self.W_in @ x[i].reshape(self.n_input, 1)
             self.model.forward(input_=input_current)
 
-        return s_rec
+        return s_rec, x_hat_rec
 
     def fit_echo_state(
         self,
