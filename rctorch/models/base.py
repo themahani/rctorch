@@ -1,13 +1,14 @@
+from typing import ClassVar
+
 import torch
-import torch.nn as nn
+from torch import nn
 
 
 class SNNBase(nn.Module):
-
-    __constants__ = ["n_hidden"]
+    __constants__: ClassVar[list[str]] = ["n_hidden"]
     n_hidden: int
 
-    __variables__ = ["mem", "rate"]
+    __variables__: ClassVar[list[str]] = ["mem", "rate"]
     mem: torch.Tensor
     rate: torch.Tensor
 

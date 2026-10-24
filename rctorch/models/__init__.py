@@ -5,8 +5,8 @@ from .lif import LIF
 from .morris_lecar import MorrisLecar, MorrisLecarCurrent
 
 __all__ = [
-    "SNNBase",
+    "LIF",
     "MorrisLecar",
     "MorrisLecarCurrent",
-    "LIF",
+    "SNNBase",
 ]

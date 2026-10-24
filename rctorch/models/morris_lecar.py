@@ -1,8 +1,8 @@
-from typing import Union
+from typing import ClassVar
 
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 
 from .base import SNNBase
 
@@ -87,7 +87,7 @@ class MorrisLecar(SNNBase):
     Coming soon...
     """
 
-    __constants__ = [
+    __constants__: ClassVar[list[str]] = [
         "dt",
         "Ne",
         "Ni",
@@ -115,7 +115,7 @@ class MorrisLecar(SNNBase):
     def __init__(
         self,
         dt: float,
-        BIAS: Union[np.ndarray, torch.Tensor, float],
+        BIAS: np.ndarray | torch.Tensor | float,
         Ne: int = 20,
         Ni: int = 20,
         C: float = 20,
@@ -266,7 +266,7 @@ class MorrisLecarCurrent(MorrisLecar):
     def __init__(
         self,
         dt: float,
-        BIAS: Union[np.ndarray, torch.Tensor, float],
+        BIAS: np.ndarray | torch.Tensor | float,
         Ne: int = 20,
         Ni: int = 20,
         C: float = 20,

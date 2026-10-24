@@ -1,13 +1,12 @@
-#!/usr/bin/env python
-
 """This module contains various supervisor generators."""
 
 import numpy as np
-from matplotlib import pyplot as plt
 
 
 class VanDerPol:
-    def __init__(self, T: float, dt: float, mu: float, tau: float, x0: float = 1, y0: float = 1) -> None:
+    def __init__(
+        self, T: float, dt: float, mu: float, tau: float, x0: float = 1, y0: float = 1
+    ) -> None:
         self.T = T
         self.dt = dt
         self.nt = round(self.T / self.dt)
@@ -48,14 +47,14 @@ class LorenzAttractor:
         sigma: float = 10.0,
         rho: float = 28.0,
         beta: float = 8 / 3.0,
-        init: np.ndarray = np.array([1.0, 0.0, 0.5]),
+        init: np.ndarray | None = None,
     ) -> None:
         # Time related
         self.T = T
         self.dt = dt
         self.nt = round(self.T / self.dt)
         self.data = np.zeros(shape=(3, self.nt))
-        self.state = init
+        self.state = np.array([1.0, 0.0, 0.5] if init is None else init, dtype=float)
         self.tau = tau  # Integration time constant
         # Parameters of the system
         self.sigma = sigma
@@ -112,33 +111,3 @@ class HyperChaoticAttractor:
             self.data[:, i] = self.state
 
         return self.data
-
-
-def main():
-    # tau = float(input("Enter frequency modifier: "))
-    tau = 2e-2
-    T = 10000
-    dt = 1e-2
-    nt = round(T / dt)
-
-    sup = HyperChaoticAttractor(T=T, dt=dt, tau=tau)
-    time = np.linspace(0, T, nt)
-
-    data = sup.generate()
-    n = 100000
-    n = nt
-    dim = data.shape[0]
-    fig, ax = plt.subplots(figsize=(20, 10), nrows=dim)
-    for i in range(dim):
-        ax[i].plot(time, data[i, :n])
-    plt.title("HyperChaos")
-    plt.savefig("./img/lorentz_x.jpg")
-    plt.close()
-
-    plt.plot(data[0, :n], data[1, :n])
-    plt.savefig("./img/lorentz_attractor.jpg")
-    plt.close()
-
-
-if __name__ == "__main__":
-    main()

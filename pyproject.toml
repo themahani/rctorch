@@ -1,6 +1,49 @@
+[project]
+name = "rctorch"
+version = "0.2.0"
+description = "Reservoir computing solution using pyTorch for GPU-acceleration"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Ali Mahani", email = "ali.a.mahani@zoho.com" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.19.0",
+    "torch>=1.8.0",
+    "tqdm>=4.60.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/themahani/rcTorch"
+"Bug Tracker" = "https://github.com/themahani/rcTorch/issues"
+
+[dependency-groups]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "ruff>=0.17.2",
+]
+
 [build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""
+
+[tool.ruff]
+line-length = 127
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["torch.device"]
 
 [tool.black]
 line-length = 127
@@ -17,7 +60,4 @@ minversion = "6.0"
 addopts = "-ra -q"
 pythonpath = [
     ".",
-]
-testpaths = [
-    "tests",
 ]

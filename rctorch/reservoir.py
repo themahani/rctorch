@@ -10,7 +10,7 @@ from .models.base import SNNBase
 
 class Reservoir(torch.nn.Module):
     def __init__(self, model_cls: SNNBase, n_input: int, n_output: int, w_in_amp: float = 200.0, **model_kwargs) -> None:
-        super(Reservoir, self).__init__()
+        super().__init__()
         self.model = model_cls(**model_kwargs)
         self.n_hidden = self.model.N
         self.n_input = n_input
@@ -36,8 +36,9 @@ class Reservoir(torch.nn.Module):
 
         # Record the state of the system
         s_rec = torch.zeros((nt, self.n_hidden), **self.model.factory_kwargs)
+        x_hat_rec = torch.zeros((nt, self.n_input), **self.model.factory_kwargs)
         # Transient Period
-        print(f"Transient Period:")
+        print("Transient Period:")
         for i in tqdm(range(nt_transient)):
             self.model.forward(0)
         # Prepare the input signal current
@@ -46,12 +47,13 @@ class Reservoir(torch.nn.Module):
             s_rec[i] = self.model.state().squeeze()  # Record the SNN state
             if closed_loop:
                 x_hat = self.W_out.t() @ s_rec[i].reshape(self.n_hidden, 1)  # Feedback loop
+                x_hat_rec[i] = x_hat.squeeze()
                 input_current = self.W_in @ x_hat
             else:
                 input_current = self.W_in @ x[i].reshape(self.n_input, 1)
             self.model.forward(input_=input_current)
 
-        return s_rec
+        return s_rec, x_hat_rec
 
     def fit_echo_state(
         self,
@@ -72,7 +74,7 @@ class Reservoir(torch.nn.Module):
         ridge_reg: float, default 1e-5
             Ridge regression coefficient
         """
-        s_rec = self.forward(x, nt_transient=nt_transient, closed_loop=False)  # forward task for training is open loop
+        s_rec, _ = self.forward(x, nt_transient=nt_transient, closed_loop=False)  # forward task for training is open loop
         Pinv = torch.linalg.pinv(s_rec.T @ s_rec + ridge_reg * torch.eye(self.n_hidden, **self.model.factory_kwargs))
         self.W_out.data = Pinv @ s_rec.T @ y
         y_hat = s_rec @ self.W_out
