@@ -1,0 +1,13 @@
+{#- Version list from sphinx-multiversion. A plain sphinx-build has no `versions`, so this renders nothing. -#}
+{%- if versions %}
+<div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+  <ul>
+    {%- for item in versions.branches + (versions.tags|sort(attribute="name", reverse=True)) %}
+    <li class="toctree-l1{% if item.name == current_version.name %} current-page{% endif %}">
+      <a class="reference internal" href="{{ item.url }}">{{ item.name }}</a>
+    </li>
+    {%- endfor %}
+  </ul>
+</div>
+{%- endif %}

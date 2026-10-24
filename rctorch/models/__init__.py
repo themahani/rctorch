@@ -1,4 +1,4 @@
-"""Neural network model implementations"""
+"""Spiking neural network models for the hidden layer of a reservoir."""
 
 from .base import SNNBase
 from .lif import LIF

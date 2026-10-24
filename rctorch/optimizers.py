@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""A module that implements coordinate descent for the MorrisLecarBlock class"""
+"""Hyperparameter search for :class:`~rctorch.Reservoir`."""
 
 import concurrent.futures
 import inspect
@@ -18,18 +18,24 @@ from .reservoir import Reservoir
 
 
 class BruteForceMesh:
-    """
-    BruteForceMesh is a brute-force algorithm developed with parallel computing
-    functionality. It takes a set of hyper-parameters and their ranges to run
-    through, and runs all simulations. It can run on multiple threads which can be
-    configured using the `num_threads` parameter.
+    """Grid search over reservoir parameters.
 
-    Args:
-        reservoir_kwargs (dict): Confgurations for the reservoir
-        train_kwargs (dict): Arguments to be passed to the reservoir's `fit_force` method.
-        test_kwargs (dict): Arguments to be passed to the reservoir's `forward` method for test phase prediction.
-        params (dict[str, np.ndarray]): Dictionary of parameter names and their ranges as numpy arrays.
-        num_threads (int, optional): The maximum number of threads to use for parallel simulations. Defaults to 4.
+    Builds every combination of the values in `params`, trains one reservoir per combination with
+    FORCE learning, tests it, and saves the results to disk. The simulations run in a thread pool.
+
+    Parameters
+    ----------
+    reservoir_kwargs : dict
+        Fixed keyword arguments for :class:`~rctorch.Reservoir`. They override entries of `params` with
+        the same name.
+    train_kwargs : dict
+        Keyword arguments for :meth:`~rctorch.Reservoir.fit_force`.
+    test_kwargs : dict
+        Keyword arguments for :meth:`~rctorch.Reservoir.forward` in the test phase.
+    params : dict of str to np.ndarray
+        Parameter names mapped to 1D arrays of the values to try.
+    num_threads : int, default 4
+        Maximum number of simulations that run at the same time.
     """
 
     def __init__(
@@ -60,17 +66,38 @@ class BruteForceMesh:
         self.model_decoders = self._create_nested_list(self.dimensions)
 
     def _create_nested_list(self, dims):
-        """Create nested lists of size specified by `dims` using a recursive algorithm."""
+        """Return nested lists of None with the shape given by `dims`.
+
+        Parameters
+        ----------
+        dims : list of int
+            Length of each nesting level.
+
+        Returns
+        -------
+        list
+            Nested lists of None.
+        """
         if len(dims) == 1:
             return [None] * dims[0]
         return [self._create_nested_list(dims[1:]) for _ in range(dims[0])]
 
     def run(self, save_dir: str) -> None:
-        """
-        Run the simulations for all parameter combinations in parallel and save data.
+        """Run one simulation per parameter combination and save each result.
 
-        Args:
-            save_dir (str): The directory where simulation data will be saved.
+        Each simulation writes to its own subdirectory of `save_dir`, named after its parameter values with
+        dots replaced by ``p``. For example, ``w_in_amp=20, gbar=10`` gives ``w_in_amp_20p0000_gbar_10p0000``.
+        The subdirectory holds ``reservoir_params.json``, ``output_data_train.npy``, and ``output_data_test.npy``.
+
+        Parameters
+        ----------
+        save_dir : str
+            Directory to save the results in.
+
+        Notes
+        -----
+        This method waits for every simulation but does not re-raise their errors. A simulation that fails
+        during training or testing prints its error. A simulation that fails while saving prints nothing.
         """
         dimensions = self.dimensions
         ranges = [range(dim) for dim in dimensions]
@@ -89,25 +116,40 @@ class BruteForceMesh:
             print("All simulations completed.")
 
     def _create_reservoir_params(self, indices):
-        """
-        Create parameter dictionary for the model initialization based on indices.
+        """Return the reservoir keyword arguments for one grid point.
+
+        Parameters
+        ----------
+        indices : tuple of int
+            Index into each parameter's array of values, in the order of `params`.
+
+        Returns
+        -------
+        dict
+            The selected parameter values merged with `reservoir_kwargs`.
         """
         reservoir_params = {self.param_names[i]: self.params[self.param_names[i]][index] for i, index in enumerate(indices)}
         reservoir_params = reservoir_params | self.reservoir_kwargs
         return reservoir_params
 
     def _run_and_save_simulation(self, reservoir_params: dict, save_dir: str) -> None:
-        """
-        Run a single simulation, save its data to a separate directory.
+        """Train and test one reservoir and save its outputs.
 
-        Args:
-            reservoir_params (dict): Parameters to initialize the reservoir with.
-            indices (tuple): Indices corresponding to the parameter combination.
-            save_dir (str): The base directory to save simulation data in.
+        Parameters
+        ----------
+        reservoir_params : dict
+            Keyword arguments for :class:`~rctorch.Reservoir`.
+        save_dir : str
+            Base directory for the results.
 
-        Notes:
-            Currently only supports the FORCE learning method.
+        Raises
+        ------
+        Warning
+            If the simulation or saving fails. The original exception is the cause.
 
+        Notes
+        -----
+        This method only supports FORCE learning.
         """
         try:
             res = Reservoir(**reservoir_params)  # Instantiate the reservoir with all the specified params
@@ -145,14 +187,20 @@ class BruteForceMesh:
         output_data_train: np.ndarray,
         output_data_test: np.ndarray,
     ):
-        """
-        Save data for a single simulation to the specified path.
+        """Save one simulation's parameters and outputs.
 
-        Args:
-            save_path (str): Directory to save the data in.
-            reservoir_params (dict): Model parameters for this simulation.
-            output_data_train (np.ndarray): Model output data.
-            output_data_test (np.ndarray): Model output data.
+        Removes ``BIAS``, ``model_cls``, and ``device`` from `reservoir_params`, then writes the rest to JSON.
+
+        Parameters
+        ----------
+        save_path : str
+            Directory to write the files to.
+        reservoir_params : dict
+            Reservoir keyword arguments. This method modifies the dict.
+        output_data_train : np.ndarray
+            Output of :meth:`~rctorch.Reservoir.fit_force`.
+        output_data_test : np.ndarray
+            Prediction of :meth:`~rctorch.Reservoir.forward` in the test phase.
         """
         params_fp = os.path.join(save_path, "reservoir_params.json")
         reservoir_params.pop("BIAS")
@@ -166,8 +214,18 @@ class BruteForceMesh:
         np.save(output_file, output_data_test)
 
     def _store_results_in_memory(self, indices, reservoir_params, output_data):
-        """
-        Store simulation results in the class's nested lists.
+        """Store one simulation's parameters and output in the nested result lists.
+
+        Nothing calls this method yet.
+
+        Parameters
+        ----------
+        indices : tuple of int
+            Position of the simulation in the grid.
+        reservoir_params : dict
+            Reservoir keyword arguments of the simulation.
+        output_data : np.ndarray
+            Output of the simulation.
         """
 
         # Helper function to set value in nested list based on indices
@@ -186,6 +244,12 @@ class BruteForceMesh:
 
 
 class KWArgsEncoder(json.JSONEncoder):
+    """JSON encoder for reservoir keyword arguments.
+
+    Encodes numpy scalars as Python numbers. Encodes numpy arrays, torch devices and dtypes, classes,
+    callables, and other objects as dicts with a ``"__type__"`` key that names the kind of value.
+    """
+
     def default(self, o):
         # Handle numpy arrays
         if isinstance(o, np.ndarray):
@@ -238,6 +302,11 @@ class KWArgsEncoder(json.JSONEncoder):
 
 # TODO: Update PSO to match the new model architecture
 class ParticleSwarmOptimizer:
+    """Particle swarm optimizer for model parameters.
+
+    Not implemented yet. :meth:`fitness` and :meth:`run` are empty.
+    """
+
     def __init__(
         self,
         Model: MorrisLecar | object,
