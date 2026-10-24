@@ -1,3 +1,5 @@
+"""Base class for spiking network models."""
+
 from typing import ClassVar
 
 import torch
@@ -5,6 +7,31 @@ from torch import nn
 
 
 class SNNBase(nn.Module):
+    r"""Base class for the spiking networks that form the hidden layer of a reservoir.
+
+    The base model integrates :math:`\dot{v} = -v + I` with forward Euler steps. Subclasses replace
+    :meth:`mem_dot` and :meth:`forward` with their own dynamics. :class:`~rctorch.Reservoir` also expects
+    a subclass to set ``N``, the number of neurons, and to either set ``r`` or override :meth:`state`.
+
+    Parameters
+    ----------
+    n_hidden : int
+        Number of neurons.
+    dt : float
+        Integration time step.
+    device : torch.device, default torch.device("cpu")
+        Device for the model's tensors.
+    dtype : torch.dtype, default torch.float32
+        Data type for the model's tensors.
+
+    Attributes
+    ----------
+    mem : torch.Tensor of shape (n_hidden, 1)
+        Membrane potential of each neuron. It starts at zero.
+    factory_kwargs : dict
+        ``device`` and ``dtype`` keyword arguments for creating tensors that match the model.
+    """
+
     __constants__: ClassVar[list[str]] = ["n_hidden"]
     n_hidden: int
 
@@ -31,24 +58,32 @@ class SNNBase(nn.Module):
         self.mem = torch.zeros(size=(self.n_hidden, 1))  # NOTE: Might have to add factory_kwargs
 
     def mem_dot(self, input_: torch.Tensor) -> torch.Tensor:
-        r"""Calculate the first time derivative of the membrane potential.
-        :param input_: Input current
-        :type input_: torch.Tensor
+        r"""Return the time derivative of the membrane potential.
 
-        :returns:
-            - mem_dot_ (torch.Tensor): The time derivative of :param:`self.mem`
-        :rtype: torch.Tensor
+        Parameters
+        ----------
+        input_ : torch.Tensor of shape (n_hidden, 1) or float
+            Input current.
+
+        Returns
+        -------
+        torch.Tensor of shape (n_hidden, 1)
+            :math:`\dot{v} = -v + I`.
         """
         return -self.mem + input_
 
     def forward(self, input_: torch.Tensor) -> torch.Tensor:
-        r"""
-        :param input_: Input tensor for the current time step.
-        :type input_: torch.Tensor, shape (`nt`, )
+        """Advance the model by one time step.
 
-        :returns:
-            - output (torch.Tensor): Updated membrane potential
-        :rtype: (torch.Tensor)
+        Parameters
+        ----------
+        input_ : torch.Tensor of shape (n_hidden, 1) or float
+            Input current for this step.
+
+        Returns
+        -------
+        torch.Tensor of shape (n_hidden, 1)
+            The updated `mem`. This is the model's own tensor, not a copy.
         """
         if self.mem is None:
             self._init_mem()
@@ -57,11 +92,11 @@ class SNNBase(nn.Module):
         return self.mem
 
     def state(self) -> torch.Tensor:
-        r"""Return the state variable of the model.
+        """Return a copy of the state that the reservoir reads out.
 
         Returns
         -------
-        torch.Tensor
-            The state variable of the model.
+        torch.Tensor of shape (n_hidden, 1)
+            A copy of ``self.r``.
         """
         return self.r.clone()
