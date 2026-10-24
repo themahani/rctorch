@@ -28,6 +28,9 @@ Run the tests with `uv run pytest`.
 
 ## Usage
 
+<!-- TODO: Fix this example. `fit_force` takes `rls_step` and `ff_coeff`, not `rls_steps` and `ff_coef`, so the call
+raises TypeError. `z_tranform` and `n_ouput` are typos for `z_transform` and `n_output`. -->
+
 ```python
 from rctorch import Reservoir
 from rctorch.models import LIF
@@ -64,7 +67,7 @@ x_hat = res.fit_force(
 
 ## Documentation
 
-Coming soon...
+The documentation is at <https://themahani.github.io/rctorch/>.
 
 ## License
 
