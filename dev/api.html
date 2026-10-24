@@ -1,0 +1,1322 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="rcTorch" href="index.html">
+        <link rel="canonical" href="https://themahani.github.io/rctorch/dev/api.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>API reference - rcTorch</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">rcTorch</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">rcTorch</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API reference</a></li>
+</ul>
+
+</div>
+<div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+  <ul>
+    <li class="toctree-l1 current-page">
+      <a class="reference internal" href="api.html">dev</a>
+    </li>
+    <li class="toctree-l1">
+      <a class="reference internal" href="../main/api.html">main</a>
+    </li>
+  </ul>
+</div></div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/api.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="api-reference">
+<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<section id="reservoir">
+<h2>Reservoir<a class="headerlink" href="#reservoir" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.Reservoir">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">Reservoir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rctorch.models.SNNBase" title="rctorch.models.base.SNNBase"><span class="pre">SNNBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_in_amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">model_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/reservoir.html#Reservoir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.Reservoir" title="Link to this definition">¶</a></dt>
+<dd><p>Reservoir computer with a spiking network as the hidden layer.</p>
+<p>The input reaches the network through fixed random weights <span class="math notranslate nohighlight">\(W_{in}\)</span>. The output is a linear
+readout of the network state <span class="math notranslate nohighlight">\(r\)</span> through trained weights <span class="math notranslate nohighlight">\(W_{out}\)</span>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[I_{in} = W_{in} x, \qquad \hat{x} = W_{out}^T r\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_cls</strong><span class="classifier">type[SNNBase]</span></dt><dd><p>Spiking network class for the hidden layer, such as <a class="reference internal" href="#rctorch.models.LIF" title="rctorch.models.LIF"><code class="xref py py-class docutils literal notranslate"><span class="pre">LIF</span></code></a>.</p>
+</dd>
+<dt><strong>n_input</strong><span class="classifier">int</span></dt><dd><p>Dimension of the input signal.</p>
+</dd>
+<dt><strong>n_output</strong><span class="classifier">int</span></dt><dd><p>Dimension of the output signal.</p>
+</dd>
+<dt><strong>w_in_amp</strong><span class="classifier">float, default 200.0</span></dt><dd><p>Amplitude of the input weights. Each entry of <cite>W_in</cite> is drawn uniformly from <code class="docutils literal notranslate"><span class="pre">[-w_in_amp,</span> <span class="pre">w_in_amp]</span></code>.</p>
+</dd>
+<dt><strong>**model_kwargs</strong></dt><dd><p>Keyword arguments for <cite>model_cls</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>model</strong><span class="classifier">SNNBase</span></dt><dd><p>The spiking network.</p>
+</dd>
+<dt><strong>n_hidden</strong><span class="classifier">int</span></dt><dd><p>Number of neurons in <cite>model</cite>.</p>
+</dd>
+<dt><strong>W_in</strong><span class="classifier">torch.Tensor of shape (n_hidden, n_input)</span></dt><dd><p>Fixed input weights.</p>
+</dd>
+<dt><strong>W_out</strong><span class="classifier">torch.nn.Parameter of shape (n_hidden, n_output)</span></dt><dd><p>Output weights with <code class="docutils literal notranslate"><span class="pre">requires_grad=False</span></code>. They start at zero, and <a class="reference internal" href="#rctorch.Reservoir.fit_echo_state" title="rctorch.Reservoir.fit_echo_state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_echo_state()</span></code></a> or
+<a class="reference internal" href="#rctorch.Reservoir.fit_force" title="rctorch.Reservoir.fit_force"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_force()</span></code></a> sets them.</p>
+</dd>
+<dt><strong>Pinv</strong><span class="classifier">torch.Tensor of shape (n_hidden, n_hidden) or None</span></dt><dd><p>Inverse correlation matrix that <a class="reference internal" href="#rctorch.Reservoir.fit_force" title="rctorch.Reservoir.fit_force"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_force()</span></code></a> updates. It is None until the first call to
+<a class="reference internal" href="#rctorch.Reservoir.fit_force" title="rctorch.Reservoir.fit_force"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_force()</span></code></a> and keeps its value between calls.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.Reservoir.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt_transient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed_loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/reservoir.html#Reservoir.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.Reservoir.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Run the reservoir and record its state.</p>
+<p>The network first runs for <cite>nt_transient</cite> steps with zero input. It then runs one step per row
+of <cite>x</cite>. In open loop, the input at step <code class="docutils literal notranslate"><span class="pre">i</span></code> is <code class="docutils literal notranslate"><span class="pre">x[i]</span></code>. In closed loop, the input is the
+prediction <span class="math notranslate nohighlight">\(\hat{x} = W_{out}^T r\)</span>, and <cite>x</cite> only sets the number of steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor of shape (nt, n_input)</span></dt><dd><p>Input signal.</p>
+</dd>
+<dt><strong>nt_transient</strong><span class="classifier">int, default 500</span></dt><dd><p>Number of steps to run with zero input before recording.</p>
+</dd>
+<dt><strong>closed_loop</strong><span class="classifier">bool, default True</span></dt><dd><p>If True, feed the prediction back as input instead of using <cite>x</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>s_rec</strong><span class="classifier">torch.Tensor of shape (nt, n_hidden)</span></dt><dd><p>Network state at each step, recorded before the step’s update.</p>
+</dd>
+<dt><strong>x_hat_rec</strong><span class="classifier">torch.Tensor of shape (nt, n_input)</span></dt><dd><p>Prediction at each step. It stays all zeros in open loop.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <cite>closed_loop</cite> is True and <cite>n_input</cite> differs from <cite>n_output</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.Reservoir.fit_echo_state">
+<span class="sig-name descname"><span class="pre">fit_echo_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt_transient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ridge_reg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/reservoir.html#Reservoir.fit_echo_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.Reservoir.fit_echo_state" title="Link to this definition">¶</a></dt>
+<dd><p>Train <cite>W_out</cite> with ridge regression on the open-loop states.</p>
+<p>Runs <a class="reference internal" href="#rctorch.Reservoir.forward" title="rctorch.Reservoir.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> in open loop on <cite>x</cite>, collects the states <span class="math notranslate nohighlight">\(S\)</span>, and sets</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[W_{out} = (S^T S + \lambda I)^{-1} S^T Y\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(Y\)</span> is <cite>y</cite> and <span class="math notranslate nohighlight">\(\lambda\)</span> is <cite>ridge_reg</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor of shape (nt, n_input)</span></dt><dd><p>Input signal.</p>
+</dd>
+<dt><strong>y</strong><span class="classifier">torch.Tensor of shape (nt, n_output)</span></dt><dd><p>Target output.</p>
+</dd>
+<dt><strong>nt_transient</strong><span class="classifier">int, default 500</span></dt><dd><p>Number of steps to run with zero input before recording.</p>
+</dd>
+<dt><strong>ridge_reg</strong><span class="classifier">float, default 1e-5</span></dt><dd><p>Ridge regularization coefficient <span class="math notranslate nohighlight">\(\lambda\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (nt, n_output)</dt><dd><p>Fitted output <span class="math notranslate nohighlight">\(S W_{out}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.Reservoir.fit_force">
+<span class="sig-name descname"><span class="pre">fit_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nt_transient</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ridge_reg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rls_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/reservoir.html#Reservoir.fit_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.Reservoir.fit_force" title="Link to this definition">¶</a></dt>
+<dd><p>Train <cite>W_out</cite> online with FORCE learning.</p>
+<p>The reservoir runs in closed loop and feeds its prediction <span class="math notranslate nohighlight">\(\hat{x}\)</span> back as input. Every
+<cite>rls_step</cite> steps, a recursive least squares update moves <cite>W_out</cite> to reduce the error
+<span class="math notranslate nohighlight">\(\hat{x} - x\)</span>. See <a class="reference internal" href="#rctorch.Reservoir._rls" title="rctorch.Reservoir._rls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_rls()</span></code></a> for the update.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor of shape (nt, n_output)</span></dt><dd><p>Target signal for the prediction to follow.</p>
+</dd>
+<dt><strong>nt_transient</strong><span class="classifier">int, default 500</span></dt><dd><p>Number of steps to run with zero input before training.</p>
+</dd>
+<dt><strong>ridge_reg</strong><span class="classifier">float, default 1.0</span></dt><dd><p>Regularization <span class="math notranslate nohighlight">\(\alpha\)</span> of the recursive least squares update. The first call starts <cite>Pinv</cite> at
+<span class="math notranslate nohighlight">\(I / \alpha\)</span>. Later calls keep the existing <cite>Pinv</cite> and ignore this value.</p>
+</dd>
+<dt><strong>rls_step</strong><span class="classifier">int, default 20</span></dt><dd><p>Number of steps between updates.</p>
+</dd>
+<dt><strong>ff_coeff</strong><span class="classifier">float, default 1.0</span></dt><dd><p>Forgetting factor of the recursive least squares update, in the range (0, 1]. With 1.0, all past
+steps have equal weight.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (nt, n_output)</dt><dd><p>Prediction at each step.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <cite>n_input</cite> differs from <cite>n_output</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.Reservoir._rls">
+<span class="sig-name descname"><span class="pre">_rls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_hat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ff_coeff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/reservoir.html#Reservoir._rls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.Reservoir._rls" title="Link to this definition">¶</a></dt>
+<dd><p>Apply one recursive least squares update to <cite>W_out</cite> and <cite>Pinv</cite>.</p>
+<p>With <span class="math notranslate nohighlight">\(P\)</span> for <cite>Pinv</cite>, <span class="math notranslate nohighlight">\(r\)</span> for <cite>state</cite>, and <span class="math notranslate nohighlight">\(\lambda\)</span> for <cite>ff_coeff</cite>:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}u &amp;= P r \\
+k &amp;= \frac{u}{\lambda + r^T u} \\
+e &amp;= \hat{x} - x \\
+P &amp;\leftarrow \frac{P - k u^T}{\lambda} \\
+W_{out} &amp;\leftarrow W_{out} - k e^T\end{split}\]</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor of shape (n_input, 1)</span></dt><dd><p>Target at the current step.</p>
+</dd>
+<dt><strong>x_hat</strong><span class="classifier">torch.Tensor of shape (n_input, 1)</span></dt><dd><p>Prediction at the current step.</p>
+</dd>
+<dt><strong>state</strong><span class="classifier">torch.Tensor of shape (n_hidden, 1)</span></dt><dd><p>Network state that produced <cite>x_hat</cite>.</p>
+</dd>
+<dt><strong>ff_coeff</strong><span class="classifier">float, default 1.0</span></dt><dd><p>Forgetting factor <span class="math notranslate nohighlight">\(\lambda\)</span>. With 1.0, the memory is infinite.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (n_input, 1)</dt><dd><p>The error <span class="math notranslate nohighlight">\(e\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <cite>x</cite>, <cite>x_hat</cite>, or <cite>state</cite> has the wrong first dimension.</p>
+</dd>
+<dt>TypeError</dt><dd><p>If <cite>Pinv</cite> is None.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="models">
+<h2>Models<a class="headerlink" href="#models" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.models.SNNBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.models.</span></span><span class="sig-name descname"><span class="pre">SNNBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_hidden</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.14)"><span class="pre">device</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.14)"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/base.html#SNNBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.SNNBase" title="Link to this definition">¶</a></dt>
+<dd><p>Base class for the spiking networks that form the hidden layer of a reservoir.</p>
+<p>The base model integrates <span class="math notranslate nohighlight">\(\dot{v} = -v + I\)</span> with forward Euler steps. Subclasses replace
+<a class="reference internal" href="#rctorch.models.SNNBase.mem_dot" title="rctorch.models.SNNBase.mem_dot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mem_dot()</span></code></a> and <a class="reference internal" href="#rctorch.models.SNNBase.forward" title="rctorch.models.SNNBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> with their own dynamics. <a class="reference internal" href="#rctorch.Reservoir" title="rctorch.Reservoir"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reservoir</span></code></a> also expects
+a subclass to set <code class="docutils literal notranslate"><span class="pre">N</span></code>, the number of neurons, and to either set <code class="docutils literal notranslate"><span class="pre">r</span></code> or override <a class="reference internal" href="#rctorch.models.SNNBase.state" title="rctorch.models.SNNBase.state"><code class="xref py py-meth docutils literal notranslate"><span class="pre">state()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>n_hidden</strong><span class="classifier">int</span></dt><dd><p>Number of neurons.</p>
+</dd>
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Integration time step.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">torch.device, default torch.device(“cpu”)</span></dt><dd><p>Device for the model’s tensors.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">torch.dtype, default torch.float32</span></dt><dd><p>Data type for the model’s tensors.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>mem</strong><span class="classifier">torch.Tensor of shape (n_hidden, 1)</span></dt><dd><p>Membrane potential of each neuron. It starts at zero.</p>
+</dd>
+<dt><strong>factory_kwargs</strong><span class="classifier">dict</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">device</span></code> and <code class="docutils literal notranslate"><span class="pre">dtype</span></code> keyword arguments for creating tensors that match the model.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.SNNBase.mem_dot">
+<span class="sig-name descname"><span class="pre">mem_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/base.html#SNNBase.mem_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.SNNBase.mem_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative of the membrane potential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (n_hidden, 1) or float</span></dt><dd><p>Input current.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (n_hidden, 1)</dt><dd><p><span class="math notranslate nohighlight">\(\dot{v} = -v + I\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.SNNBase.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/base.html#SNNBase.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.SNNBase.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Advance the model by one time step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (n_hidden, 1) or float</span></dt><dd><p>Input current for this step.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (n_hidden, 1)</dt><dd><p>The updated <cite>mem</cite>. This is the model’s own tensor, not a copy.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.SNNBase.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/base.html#SNNBase.state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.SNNBase.state" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the state that the reservoir reads out.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>torch.Tensor of shape (n_hidden, 1)</dt><dd><p>A copy of <code class="docutils literal notranslate"><span class="pre">self.r</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.models.LIF">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.models.</span></span><span class="sig-name descname"><span class="pre">LIF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ni</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">80.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gbar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.14)"><span class="pre">device</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.14)"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/lif.html#LIF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.LIF" title="Link to this definition">¶</a></dt>
+<dd><p>Network of leaky integrate-and-fire neurons with exponential synapses.</p>
+<p>The membrane potential <span class="math notranslate nohighlight">\(v\)</span> and synaptic output <span class="math notranslate nohighlight">\(r\)</span> of the neurons follow</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\tau_m \dot{v} &amp;= -v + I_{bias} + \bar{g} W r + I_{in} \\
+\tau_s \dot{r} &amp;= -r\end{split}\]</div>
+</div>
+<p>When <span class="math notranslate nohighlight">\(v\)</span> of a neuron crosses <span class="math notranslate nohighlight">\(v_{th} = 30\)</span> mV, it resets to <span class="math notranslate nohighlight">\(v_{reset} = -20\)</span> mV
+and <span class="math notranslate nohighlight">\(r\)</span> of that neuron grows by <span class="math notranslate nohighlight">\(1 / \tau_s\)</span>. The model integrates both equations with
+forward Euler steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Ne</strong><span class="classifier">int</span></dt><dd><p>Number of excitatory neurons.</p>
+</dd>
+<dt><strong>Ni</strong><span class="classifier">int</span></dt><dd><p>Number of inhibitory neurons.</p>
+</dd>
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Integration time step in ms.</p>
+</dd>
+<dt><strong>BIAS</strong><span class="classifier">torch.Tensor, np.ndarray, or float, default 80.0</span></dt><dd><p>Bias current <span class="math notranslate nohighlight">\(I_{bias}\)</span> in pA. Pass one value for all neurons or an array of shape (N, 1).</p>
+</dd>
+<dt><strong>tau_m</strong><span class="classifier">float, default 50</span></dt><dd><p>Membrane time constant <span class="math notranslate nohighlight">\(\tau_m\)</span> in ms.</p>
+</dd>
+<dt><strong>tau_s</strong><span class="classifier">float, default 20</span></dt><dd><p>Synaptic time constant <span class="math notranslate nohighlight">\(\tau_s\)</span> in ms.</p>
+</dd>
+<dt><strong>gbar</strong><span class="classifier">float, default 5</span></dt><dd><p>Coupling strength <span class="math notranslate nohighlight">\(\bar{g}\)</span>.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">torch.device, default torch.device(“cpu”)</span></dt><dd><p>Device for the model’s tensors.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">torch.dtype, default torch.float32</span></dt><dd><p>Data type for the model’s tensors.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>N</strong><span class="classifier">int</span></dt><dd><p>Total number of neurons, <code class="docutils literal notranslate"><span class="pre">Ne</span> <span class="pre">+</span> <span class="pre">Ni</span></code>.</p>
+</dd>
+<dt><strong>mem</strong><span class="classifier">torch.Tensor of shape (N, 1)</span></dt><dd><p>Membrane potential <span class="math notranslate nohighlight">\(v\)</span> in mV. It starts at zero.</p>
+</dd>
+<dt><strong>r</strong><span class="classifier">torch.Tensor of shape (N, 1)</span></dt><dd><p>Synaptic output, which the reservoir reads out. It starts uniformly random in [0, 1).</p>
+</dd>
+<dt><strong>w</strong><span class="classifier">torch.Tensor of shape (N, N)</span></dt><dd><p>Recurrent weights <span class="math notranslate nohighlight">\(W\)</span>, drawn from a normal distribution with mean 0 and standard deviation 1 / N.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p><cite>Ne</cite> and <cite>Ni</cite> only set <cite>N</cite>. The weights do not depend on whether a neuron is excitatory or inhibitory.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.LIF.r_dot">
+<span class="sig-name descname"><span class="pre">r_dot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/lif.html#LIF.r_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.LIF.r_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative of the synaptic output, <span class="math notranslate nohighlight">\(\dot{r} = -r / \tau_s\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.LIF.mem_dot">
+<span class="sig-name descname"><span class="pre">mem_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/lif.html#LIF.mem_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.LIF.mem_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative of the membrane potential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (N, 1) or float</span></dt><dd><p>Input current <span class="math notranslate nohighlight">\(I_{in}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (N, 1)</dt><dd><p><span class="math notranslate nohighlight">\(\dot{v} = (-v + I_{bias} + \bar{g} W r + I_{in}) / \tau_m\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.LIF.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/lif.html#LIF.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.LIF.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Advance the network by one time step, then reset the neurons that spiked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (N, 1) or float</span></dt><dd><p>Input current for this step.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (N, 1)</dt><dd><p>The updated <cite>r</cite>. This is the model’s own tensor, not a copy.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.LIF.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/lif.html#LIF.state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.LIF.state" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the synaptic output <cite>r</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.models.</span></span><span class="sig-name descname"><span class="pre">MorrisLecar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ni</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_Ca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-84</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_Ca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">18</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.04</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_AMPA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_GABA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gbar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.14)"><span class="pre">device</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.dtype" title="(in PyTorch v2.14)"><span class="pre">dtype</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">torch.float32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar" title="Link to this definition">¶</a></dt>
+<dd><p>Network of Morris-Lecar neurons with conductance-based synapses.</p>
+<p>The model updates all <span class="math notranslate nohighlight">\(N\)</span> neurons at once with tensor operations and forward Euler steps.
+See the Notes section for the equations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Integration time step in ms.</p>
+</dd>
+<dt><strong>BIAS</strong><span class="classifier">np.ndarray, torch.Tensor, or float</span></dt><dd><p>Bias current <span class="math notranslate nohighlight">\(I_{bias}\)</span> in pA. Pass one value for all neurons or an array of shape (N, 1).</p>
+</dd>
+<dt><strong>Ne</strong><span class="classifier">int, default 20</span></dt><dd><p>Number of excitatory neurons. Their synapses use the reversal potential <cite>E_AMPA</cite>.</p>
+</dd>
+<dt><strong>Ni</strong><span class="classifier">int, default 20</span></dt><dd><p>Number of inhibitory neurons. Their synapses use the reversal potential <cite>E_GABA</cite>.</p>
+</dd>
+<dt><strong>C</strong><span class="classifier">float, default 20</span></dt><dd><p>Membrane capacitance <span class="math notranslate nohighlight">\(C\)</span>. It divides the total current, so it also sets the time scale of <span class="math notranslate nohighlight">\(v\)</span>.</p>
+</dd>
+<dt><strong>g_L</strong><span class="classifier">float, default 2</span></dt><dd><p>Leak conductance <span class="math notranslate nohighlight">\(g_L\)</span>.</p>
+</dd>
+<dt><strong>g_K</strong><span class="classifier">float, default 8</span></dt><dd><p>Potassium conductance <span class="math notranslate nohighlight">\(g_K\)</span>.</p>
+</dd>
+<dt><strong>g_Ca</strong><span class="classifier">float, default 4.4</span></dt><dd><p>Calcium conductance <span class="math notranslate nohighlight">\(g_{Ca}\)</span>.</p>
+</dd>
+<dt><strong>E_L</strong><span class="classifier">float, default -60</span></dt><dd><p>Reversal potential of the leak current in mV.</p>
+</dd>
+<dt><strong>E_K</strong><span class="classifier">float, default -84</span></dt><dd><p>Reversal potential of the potassium current in mV.</p>
+</dd>
+<dt><strong>E_Ca</strong><span class="classifier">float, default 120</span></dt><dd><p>Reversal potential of the calcium current in mV.</p>
+</dd>
+<dt><strong>v1</strong><span class="classifier">float, default -1.2</span></dt><dd><p>Midpoint <span class="math notranslate nohighlight">\(v_1\)</span> of <span class="math notranslate nohighlight">\(m_\infty\)</span> in mV.</p>
+</dd>
+<dt><strong>v2</strong><span class="classifier">float, default 18</span></dt><dd><p>Slope <span class="math notranslate nohighlight">\(v_2\)</span> of <span class="math notranslate nohighlight">\(m_\infty\)</span> in mV.</p>
+</dd>
+<dt><strong>v3</strong><span class="classifier">float, default 2</span></dt><dd><p>Midpoint <span class="math notranslate nohighlight">\(v_3\)</span> of <span class="math notranslate nohighlight">\(n_\infty\)</span> and <span class="math notranslate nohighlight">\(\tau_n\)</span> in mV.</p>
+</dd>
+<dt><strong>v4</strong><span class="classifier">float, default 30</span></dt><dd><p>Slope <span class="math notranslate nohighlight">\(v_4\)</span> of <span class="math notranslate nohighlight">\(n_\infty\)</span> and <span class="math notranslate nohighlight">\(\tau_n\)</span> in mV.</p>
+</dd>
+<dt><strong>phi</strong><span class="classifier">float, default 0.04</span></dt><dd><p>Rate factor <span class="math notranslate nohighlight">\(\phi\)</span> of the potassium gate.</p>
+</dd>
+<dt><strong>a_r</strong><span class="classifier">float, default 1.1</span></dt><dd><p>Rise rate <span class="math notranslate nohighlight">\(\alpha_r\)</span> of the synaptic gate.</p>
+</dd>
+<dt><strong>a_d</strong><span class="classifier">float, default 0.02</span></dt><dd><p>Decay rate <span class="math notranslate nohighlight">\(\alpha_d\)</span> of the synaptic gate.</p>
+</dd>
+<dt><strong>v_t</strong><span class="classifier">float, default 2</span></dt><dd><p>Midpoint <span class="math notranslate nohighlight">\(v_t\)</span> of the transmitter release <span class="math notranslate nohighlight">\(T(v)\)</span> in mV.</p>
+</dd>
+<dt><strong>k_p</strong><span class="classifier">float, default 5</span></dt><dd><p>Slope <span class="math notranslate nohighlight">\(k_p\)</span> of <span class="math notranslate nohighlight">\(T(v)\)</span> in mV.</p>
+</dd>
+<dt><strong>t_max</strong><span class="classifier">float, default 1.0</span></dt><dd><p>Maximum <span class="math notranslate nohighlight">\(T_{max}\)</span> of <span class="math notranslate nohighlight">\(T(v)\)</span>.</p>
+</dd>
+<dt><strong>E_AMPA</strong><span class="classifier">float, default 0</span></dt><dd><p>Reversal potential of excitatory synapses in mV.</p>
+</dd>
+<dt><strong>E_GABA</strong><span class="classifier">float, default -75</span></dt><dd><p>Reversal potential of inhibitory synapses in mV.</p>
+</dd>
+<dt><strong>gbar</strong><span class="classifier">float, default 1</span></dt><dd><p>Synaptic conductance <span class="math notranslate nohighlight">\(\bar{g}\)</span> in nS.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">torch.device, default torch.device(“cpu”)</span></dt><dd><p>Device for the model’s tensors.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">torch.dtype, default torch.float32</span></dt><dd><p>Data type for the model’s tensors.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>N</strong><span class="classifier">int</span></dt><dd><p>Total number of neurons, <code class="docutils literal notranslate"><span class="pre">Ne</span> <span class="pre">+</span> <span class="pre">Ni</span></code>.</p>
+</dd>
+<dt><strong>mem</strong><span class="classifier">torch.Tensor of shape (N, 1)</span></dt><dd><p>Membrane potential <span class="math notranslate nohighlight">\(v\)</span> in mV. It starts at zero.</p>
+</dd>
+<dt><strong>n</strong><span class="classifier">torch.Tensor of shape (N, 1)</span></dt><dd><p>Potassium gating variable. It starts uniformly random in [0, 1).</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">torch.Tensor of shape (N, 1)</span></dt><dd><p>Synaptic gating variable, which the reservoir reads out. It starts at zero.</p>
+</dd>
+<dt><strong>w</strong><span class="classifier">torch.Tensor of shape (N, N)</span></dt><dd><p>Boolean connectivity <span class="math notranslate nohighlight">\(w\)</span>. Each entry is True with probability 2 / N.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The membrane potential follows</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[C \dot{v} = I_{bias} + I_L + I_K + I_{Ca} + I_{in} + I_{syn}\]</div>
+</div>
+<p>with the ionic currents</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}I_L &amp;= -g_L (v - E_L) \\
+I_K &amp;= -g_K n (v - E_K) \\
+I_{Ca} &amp;= -g_{Ca} m_\infty(v) (v - E_{Ca})\end{split}\]</div>
+</div>
+<p>The gating variables follow</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\dot{n} &amp;= \frac{n_\infty(v) - n}{\tau_n(v)} \\
+\dot{s} &amp;= \alpha_r T(v) (1 - s) - \alpha_d s\end{split}\]</div>
+</div>
+<p>where</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}m_\infty(v) &amp;= \frac{1}{2} \left[1 + \tanh\left(\frac{v - v_1}{v_2}\right)\right] \\
+n_\infty(v) &amp;= \frac{1}{2} \left[1 + \tanh\left(\frac{v - v_3}{v_4}\right)\right] \\
+\tau_n(v) &amp;= \frac{1}{\phi \cosh\left(\frac{v - v_3}{2 v_4}\right)} \\
+T(v) &amp;= \frac{T_{max}}{1 + \exp\left(-\frac{v - v_t}{k_p}\right)}\end{split}\]</div>
+</div>
+<p>The synaptic current into neuron <span class="math notranslate nohighlight">\(i\)</span> is</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[I_{syn,i} = -\bar{g} \sum_{j=1}^{N} w_{ij} (v_i - E_j) s_j\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(E_j\)</span> is <cite>E_AMPA</cite> if neuron <span class="math notranslate nohighlight">\(j\)</span> is excitatory and <cite>E_GABA</cite> if it is inhibitory.
+All outgoing synapses of a neuron share its reversal potential, so the network follows Dale’s law.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.m_ss">
+<span class="sig-name descname"><span class="pre">m_ss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.m_ss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.m_ss" title="Link to this definition">¶</a></dt>
+<dd><p>Return the steady-state calcium activation <span class="math notranslate nohighlight">\(m_\infty(v)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.n_ss">
+<span class="sig-name descname"><span class="pre">n_ss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.n_ss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.n_ss" title="Link to this definition">¶</a></dt>
+<dd><p>Return the steady-state potassium activation <span class="math notranslate nohighlight">\(n_\infty(v)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.tau_n">
+<span class="sig-name descname"><span class="pre">tau_n</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.tau_n"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.tau_n" title="Link to this definition">¶</a></dt>
+<dd><p>Return the potassium time constant <span class="math notranslate nohighlight">\(\tau_n(v)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.T">
+<span class="sig-name descname"><span class="pre">T</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.T" title="Link to this definition">¶</a></dt>
+<dd><p>Return the transmitter release <span class="math notranslate nohighlight">\(T(v)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.s_dot">
+<span class="sig-name descname"><span class="pre">s_dot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.s_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.s_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative <span class="math notranslate nohighlight">\(\dot{s}\)</span> of the synaptic gate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.n_dot">
+<span class="sig-name descname"><span class="pre">n_dot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.n_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.n_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative <span class="math notranslate nohighlight">\(\dot{n}\)</span> of the potassium gate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.calc_ipsc">
+<span class="sig-name descname"><span class="pre">calc_ipsc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.calc_ipsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.calc_ipsc" title="Link to this definition">¶</a></dt>
+<dd><p>Return the synaptic current <span class="math notranslate nohighlight">\(I_{syn}\)</span> into each neuron, as a tensor of shape (N, 1).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.check_nan">
+<span class="sig-name descname"><span class="pre">check_nan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.check_nan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.check_nan" title="Link to this definition">¶</a></dt>
+<dd><p>Raise an error if a tensor contains NaN.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inp</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Tensor to check.</p>
+</dd>
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name of the tensor for the error message.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ValueError</dt><dd><p>If <cite>inp</cite> contains NaN.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.mem_dot">
+<span class="sig-name descname"><span class="pre">mem_dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.mem_dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.mem_dot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time derivative of the membrane potential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (N, 1) or float</span></dt><dd><p>Input current <span class="math notranslate nohighlight">\(I_{in}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (N, 1)</dt><dd><p><span class="math notranslate nohighlight">\(\dot{v} = (I_{bias} + I_L + I_K + I_{Ca} + I_{in} + I_{syn}) / C\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Advance the network by one time step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input_</strong><span class="classifier">torch.Tensor of shape (N, 1) or float</span></dt><dd><p>Input current for this step.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor of shape (N, 1)</dt><dd><p>The updated <cite>s</cite>. This is the model’s own tensor, not a copy.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the membrane potential contains NaN after the step.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecar.state">
+<span class="sig-name descname"><span class="pre">state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecar.state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecar.state" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the synaptic gate <cite>s</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecarCurrent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.models.</span></span><span class="sig-name descname"><span class="pre">MorrisLecarCurrent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">BIAS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ne</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ni</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_Ca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_L</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_K</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-84</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_Ca</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">120</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">18</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v3</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v4</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.04</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_r</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a_d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.02</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_AMPA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_GABA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-75</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gbar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensor_attributes.html#torch.device" title="(in PyTorch v2.14)"><span class="pre">device</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_sparsity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecarCurrent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecarCurrent" title="Link to this definition">¶</a></dt>
+<dd><p>Morris-Lecar network with current-based synapses and normally distributed weights.</p>
+<p>The neurons follow the same dynamics as in <a class="reference internal" href="#rctorch.models.MorrisLecar" title="rctorch.models.MorrisLecar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MorrisLecar</span></code></a>, but the synaptic current
+into neuron <span class="math notranslate nohighlight">\(i\)</span> has no reversal potentials:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[I_{syn,i} = -\bar{g} \sum_{j=1}^{N} w_{ij} s_j\]</div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(w_{ij}\)</span> is the weight from neuron <span class="math notranslate nohighlight">\(j\)</span> to neuron <span class="math notranslate nohighlight">\(i\)</span>. The sign of each weight,
+not the neuron type, decides whether a synapse excites or inhibits. A neuron can have outgoing synapses
+of both signs, so the network does not follow Dale’s law. For other connectivity, assign your own
+weights to <cite>w</cite>.</p>
+<p>The model takes the same parameters as <a class="reference internal" href="#rctorch.models.MorrisLecar" title="rctorch.models.MorrisLecar"><code class="xref py py-class docutils literal notranslate"><span class="pre">MorrisLecar</span></code></a>, plus <cite>p_sparsity</cite>. It has no <cite>dtype</cite>
+parameter and always uses float32. <cite>Ne</cite> and <cite>Ni</cite> only set <cite>N</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>p_sparsity</strong><span class="classifier">float, default 1.0</span></dt><dd><p>Sets the standard deviation of the weights to <span class="math notranslate nohighlight">\(1 / \sqrt{N p}\)</span>, where <span class="math notranslate nohighlight">\(p\)</span> is <cite>p_sparsity</cite>.
+The weights stay dense.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>w</strong><span class="classifier">torch.Tensor of shape (N, N)</span></dt><dd><p>Recurrent weights <span class="math notranslate nohighlight">\(w\)</span>, drawn from a normal distribution with mean 0 and standard deviation
+<span class="math notranslate nohighlight">\(1 / \sqrt{N p}\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.models.MorrisLecarCurrent.calc_ipsc">
+<span class="sig-name descname"><span class="pre">calc_ipsc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.14)"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="_modules/rctorch/models/morris_lecar.html#MorrisLecarCurrent.calc_ipsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.models.MorrisLecarCurrent.calc_ipsc" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current-based synaptic current <span class="math notranslate nohighlight">\(I_{syn} = -\bar{g} w s\)</span>, of shape (N, 1).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="supervisors">
+<h2>Supervisors<a class="headerlink" href="#supervisors" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.VanDerPol">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">VanDerPol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">x0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#VanDerPol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.VanDerPol" title="Link to this definition">¶</a></dt>
+<dd><p>Van der Pol oscillator.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\dot{x} &amp;= \tau y \\
+\dot{y} &amp;= \tau \left[\mu (1 - x^2) y - x\right]\end{split}\]</div>
+</div>
+<p>The generator integrates the system with forward Euler steps and updates <span class="math notranslate nohighlight">\(x\)</span> before <span class="math notranslate nohighlight">\(y\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>Duration of the generated signal, in the same unit as <cite>dt</cite>.</p>
+</dd>
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Time step.</p>
+</dd>
+<dt><strong>mu</strong><span class="classifier">float</span></dt><dd><p>Nonlinearity and damping strength <span class="math notranslate nohighlight">\(\mu\)</span>.</p>
+</dd>
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Time-scale factor <span class="math notranslate nohighlight">\(\tau\)</span>. Larger values make the oscillation faster.</p>
+</dd>
+<dt><strong>x0</strong><span class="classifier">float, default 1</span></dt><dd><p>Initial value of <span class="math notranslate nohighlight">\(x\)</span>.</p>
+</dd>
+<dt><strong>y0</strong><span class="classifier">float, default 1</span></dt><dd><p>Initial value of <span class="math notranslate nohighlight">\(y\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>nt</strong><span class="classifier">int</span></dt><dd><p>Number of recorded steps, <code class="docutils literal notranslate"><span class="pre">round(T</span> <span class="pre">/</span> <span class="pre">dt)</span></code>.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">np.ndarray of shape (2, nt)</span></dt><dd><p>The signal from the last call to <a class="reference internal" href="#rctorch.VanDerPol.generate" title="rctorch.VanDerPol.generate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.VanDerPol.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transient_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#VanDerPol.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.VanDerPol.generate" title="Link to this definition">¶</a></dt>
+<dd><p>Integrate the oscillator and return the trajectory.</p>
+<p>The state carries over between calls, so a second call continues where the first one stopped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>transient_time</strong><span class="classifier">float, default 200</span></dt><dd><p>Time to integrate and discard before recording, in the same unit as <cite>dt</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray of shape (2, nt)</dt><dd><p>Rows are <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.LorenzAttractor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">LorenzAttractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">28.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.6666666666666665</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#LorenzAttractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.LorenzAttractor" title="Link to this definition">¶</a></dt>
+<dd><p>Lorenz system.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\dot{x} &amp;= \tau \sigma (y - x) \\
+\dot{y} &amp;= \tau \left[x (\rho - z) - y\right] \\
+\dot{z} &amp;= \tau (x y - \beta z)\end{split}\]</div>
+</div>
+<p>The generator integrates the system with forward Euler steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>Duration of the generated signal, in the same unit as <cite>dt</cite>.</p>
+</dd>
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Time step.</p>
+</dd>
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Time-scale factor <span class="math notranslate nohighlight">\(\tau\)</span>. Larger values make the trajectory faster.</p>
+</dd>
+<dt><strong>sigma</strong><span class="classifier">float, default 10.0</span></dt><dd><p>Parameter <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+</dd>
+<dt><strong>rho</strong><span class="classifier">float, default 28.0</span></dt><dd><p>Parameter <span class="math notranslate nohighlight">\(\rho\)</span>.</p>
+</dd>
+<dt><strong>beta</strong><span class="classifier">float, default 8/3</span></dt><dd><p>Parameter <span class="math notranslate nohighlight">\(\beta\)</span>.</p>
+</dd>
+<dt><strong>init</strong><span class="classifier">np.ndarray of shape (3,), optional</span></dt><dd><p>Initial state <span class="math notranslate nohighlight">\((x, y, z)\)</span>. Defaults to <code class="docutils literal notranslate"><span class="pre">[1.0,</span> <span class="pre">0.0,</span> <span class="pre">0.5]</span></code>. The generator copies the array
+and leaves the caller’s array unchanged.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>nt</strong><span class="classifier">int</span></dt><dd><p>Number of recorded steps, <code class="docutils literal notranslate"><span class="pre">round(T</span> <span class="pre">/</span> <span class="pre">dt)</span></code>.</p>
+</dd>
+<dt><strong>state</strong><span class="classifier">np.ndarray of shape (3,)</span></dt><dd><p>Current state <span class="math notranslate nohighlight">\((x, y, z)\)</span>.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">np.ndarray of shape (3, nt)</span></dt><dd><p>The signal from the last call to <a class="reference internal" href="#rctorch.LorenzAttractor.generate" title="rctorch.LorenzAttractor.generate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.LorenzAttractor.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transient_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#LorenzAttractor.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.LorenzAttractor.generate" title="Link to this definition">¶</a></dt>
+<dd><p>Integrate the system and return the trajectory.</p>
+<p>The state carries over between calls, so a second call continues where the first one stopped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>transient_time</strong><span class="classifier">float, default 0.0</span></dt><dd><p>Time to integrate and discard before recording, in the same unit as <cite>dt</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray of shape (3, nt)</dt><dd><p>Rows are <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, and <span class="math notranslate nohighlight">\(z\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.HyperChaoticAttractor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">HyperChaoticAttractor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.15)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#HyperChaoticAttractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.HyperChaoticAttractor" title="Link to this definition">¶</a></dt>
+<dd><p>Rössler hyperchaotic system.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[\begin{split}\dot{x}_1 &amp;= \tau (-x_2 - x_3) \\
+\dot{x}_2 &amp;= \tau (x_1 + a x_2 + x_4) \\
+\dot{x}_3 &amp;= \tau (b + x_1 x_3) \\
+\dot{x}_4 &amp;= \tau (-c x_3 + d x_4)\end{split}\]</div>
+</div>
+<p>with <span class="math notranslate nohighlight">\(a = 0.25\)</span>, <span class="math notranslate nohighlight">\(b = 3\)</span>, <span class="math notranslate nohighlight">\(c = 0.5\)</span>, and <span class="math notranslate nohighlight">\(d = 0.05\)</span>. The state starts at
+<span class="math notranslate nohighlight">\((-10, -6, 0, 10)\)</span>, and the generator integrates the system with forward Euler steps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>T</strong><span class="classifier">float</span></dt><dd><p>Duration of the generated signal, in the same unit as <cite>dt</cite>.</p>
+</dd>
+<dt><strong>dt</strong><span class="classifier">float</span></dt><dd><p>Time step.</p>
+</dd>
+<dt><strong>tau</strong><span class="classifier">float</span></dt><dd><p>Time-scale factor <span class="math notranslate nohighlight">\(\tau\)</span>. Larger values make the trajectory faster.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>nt</strong><span class="classifier">int</span></dt><dd><p>Number of recorded steps, <code class="docutils literal notranslate"><span class="pre">round(T</span> <span class="pre">/</span> <span class="pre">dt)</span></code>.</p>
+</dd>
+<dt><strong>state</strong><span class="classifier">np.ndarray of shape (4,)</span></dt><dd><p>Current state <span class="math notranslate nohighlight">\((x_1, x_2, x_3, x_4)\)</span>.</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">np.ndarray of shape (4, nt)</span></dt><dd><p>The signal from the last call to <a class="reference internal" href="#rctorch.HyperChaoticAttractor.generate" title="rctorch.HyperChaoticAttractor.generate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.HyperChaoticAttractor.generate">
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/supervisors.html#HyperChaoticAttractor.generate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.HyperChaoticAttractor.generate" title="Link to this definition">¶</a></dt>
+<dd><p>Integrate the system and return the trajectory.</p>
+<p>The state carries over between calls, so a second call continues where the first one stopped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>np.ndarray of shape (4, nt)</dt><dd><p>Rows are <span class="math notranslate nohighlight">\(x_1\)</span> through <span class="math notranslate nohighlight">\(x_4\)</span>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="optimizers">
+<h2>Optimizers<a class="headerlink" href="#optimizers" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.BruteForceMesh">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">BruteForceMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reservoir_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_threads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/optimizers.html#BruteForceMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.BruteForceMesh" title="Link to this definition">¶</a></dt>
+<dd><p>Grid search over reservoir parameters.</p>
+<p>Builds every combination of the values in <cite>params</cite>, trains one reservoir per combination with
+FORCE learning, tests it, and saves the results to disk. The simulations run in a thread pool.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>reservoir_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Fixed keyword arguments for <a class="reference internal" href="#rctorch.Reservoir" title="rctorch.Reservoir"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reservoir</span></code></a>. They override entries of <cite>params</cite> with
+the same name.</p>
+</dd>
+<dt><strong>train_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments for <a class="reference internal" href="#rctorch.Reservoir.fit_force" title="rctorch.Reservoir.fit_force"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_force()</span></code></a>.</p>
+</dd>
+<dt><strong>test_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments for <a class="reference internal" href="#rctorch.Reservoir.forward" title="rctorch.Reservoir.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> in the test phase.</p>
+</dd>
+<dt><strong>params</strong><span class="classifier">dict of str to np.ndarray</span></dt><dd><p>Parameter names mapped to 1D arrays of the values to try.</p>
+</dd>
+<dt><strong>num_threads</strong><span class="classifier">int, default 4</span></dt><dd><p>Maximum number of simulations that run at the same time.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="rctorch.BruteForceMesh.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.15)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/rctorch/optimizers.html#BruteForceMesh.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.BruteForceMesh.run" title="Link to this definition">¶</a></dt>
+<dd><p>Run one simulation per parameter combination and save each result.</p>
+<p>Each simulation writes to its own subdirectory of <cite>save_dir</cite>, named after its parameter values with
+dots replaced by <code class="docutils literal notranslate"><span class="pre">p</span></code>. For example, <code class="docutils literal notranslate"><span class="pre">w_in_amp=20,</span> <span class="pre">gbar=10</span></code> gives <code class="docutils literal notranslate"><span class="pre">w_in_amp_20p0000_gbar_10p0000</span></code>.
+The subdirectory holds <code class="docutils literal notranslate"><span class="pre">reservoir_params.json</span></code>, <code class="docutils literal notranslate"><span class="pre">output_data_train.npy</span></code>, and <code class="docutils literal notranslate"><span class="pre">output_data_test.npy</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>save_dir</strong><span class="classifier">str</span></dt><dd><p>Directory to save the results in.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This method waits for every simulation but does not re-raise their errors. A simulation that fails
+during training or testing prints its error. A simulation that fails while saving prints nothing.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="rctorch.ParticleSwarmOptimizer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">ParticleSwarmOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#rctorch.models.MorrisLecar" title="rctorch.models.morris_lecar.MorrisLecar"><span class="pre">MorrisLecar</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.15)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">render_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#dict" title="(in Python v3.15)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.15)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.15)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_particles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.15)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/optimizers.html#ParticleSwarmOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.ParticleSwarmOptimizer" title="Link to this definition">¶</a></dt>
+<dd><p>Particle swarm optimizer for model parameters.</p>
+<p>Not implemented yet. <code class="xref py py-meth docutils literal notranslate"><span class="pre">fitness()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> are empty.</p>
+</dd></dl>
+
+</section>
+<section id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="rctorch.z_transform">
+<span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">z_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><span class="pre">ndarray</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/utils.html#z_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.z_transform" title="Link to this definition">¶</a></dt>
+<dd><p>Standardize each column to zero mean and unit variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>signal</strong><span class="classifier">np.ndarray of shape (nt, n_features)</span></dt><dd><p>Time series with time along the first axis.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray of shape (nt, n_features)</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(signal</span> <span class="pre">-</span> <span class="pre">mean)</span> <span class="pre">/</span> <span class="pre">std</span></code>, with the mean and standard deviation of each column taken over time.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rctorch.minmax_transform">
+<span class="sig-prename descclassname"><span class="pre">rctorch.</span></span><span class="sig-name descname"><span class="pre">minmax_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zero_mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.15)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rctorch/utils.html#minmax_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rctorch.minmax_transform" title="Link to this definition">¶</a></dt>
+<dd><p>Rescale each column to the range [0, 1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>signal</strong><span class="classifier">np.ndarray of shape (nt, n_features)</span></dt><dd><p>Time series with time along the first axis.</p>
+</dd>
+<dt><strong>zero_mean</strong><span class="classifier">bool, default False</span></dt><dd><p>If True, subtract the mean of each rescaled column so the result is centered on zero.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray of shape (nt, n_features)</dt><dd><p>The rescaled signal.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Ali Mahani
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">API reference</a><ul>
+<li><a class="reference internal" href="#reservoir">Reservoir</a><ul>
+<li><a class="reference internal" href="#rctorch.Reservoir"><code class="docutils literal notranslate"><span class="pre">Reservoir</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.Reservoir.forward"><code class="docutils literal notranslate"><span class="pre">Reservoir.forward()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.Reservoir.fit_echo_state"><code class="docutils literal notranslate"><span class="pre">Reservoir.fit_echo_state()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.Reservoir.fit_force"><code class="docutils literal notranslate"><span class="pre">Reservoir.fit_force()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.Reservoir._rls"><code class="docutils literal notranslate"><span class="pre">Reservoir._rls()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#models">Models</a><ul>
+<li><a class="reference internal" href="#rctorch.models.SNNBase"><code class="docutils literal notranslate"><span class="pre">SNNBase</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.models.SNNBase.mem_dot"><code class="docutils literal notranslate"><span class="pre">SNNBase.mem_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.SNNBase.forward"><code class="docutils literal notranslate"><span class="pre">SNNBase.forward()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.SNNBase.state"><code class="docutils literal notranslate"><span class="pre">SNNBase.state()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.models.LIF"><code class="docutils literal notranslate"><span class="pre">LIF</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.models.LIF.r_dot"><code class="docutils literal notranslate"><span class="pre">LIF.r_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.LIF.mem_dot"><code class="docutils literal notranslate"><span class="pre">LIF.mem_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.LIF.forward"><code class="docutils literal notranslate"><span class="pre">LIF.forward()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.LIF.state"><code class="docutils literal notranslate"><span class="pre">LIF.state()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar"><code class="docutils literal notranslate"><span class="pre">MorrisLecar</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.m_ss"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.m_ss()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.n_ss"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.n_ss()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.tau_n"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.tau_n()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.T"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.T()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.s_dot"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.s_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.n_dot"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.n_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.calc_ipsc"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.calc_ipsc()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.check_nan"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.check_nan()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.mem_dot"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.mem_dot()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.forward"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.forward()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecar.state"><code class="docutils literal notranslate"><span class="pre">MorrisLecar.state()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecarCurrent"><code class="docutils literal notranslate"><span class="pre">MorrisLecarCurrent</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.models.MorrisLecarCurrent.calc_ipsc"><code class="docutils literal notranslate"><span class="pre">MorrisLecarCurrent.calc_ipsc()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#supervisors">Supervisors</a><ul>
+<li><a class="reference internal" href="#rctorch.VanDerPol"><code class="docutils literal notranslate"><span class="pre">VanDerPol</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.VanDerPol.generate"><code class="docutils literal notranslate"><span class="pre">VanDerPol.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.LorenzAttractor"><code class="docutils literal notranslate"><span class="pre">LorenzAttractor</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.LorenzAttractor.generate"><code class="docutils literal notranslate"><span class="pre">LorenzAttractor.generate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.HyperChaoticAttractor"><code class="docutils literal notranslate"><span class="pre">HyperChaoticAttractor</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.HyperChaoticAttractor.generate"><code class="docutils literal notranslate"><span class="pre">HyperChaoticAttractor.generate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optimizers">Optimizers</a><ul>
+<li><a class="reference internal" href="#rctorch.BruteForceMesh"><code class="docutils literal notranslate"><span class="pre">BruteForceMesh</span></code></a><ul>
+<li><a class="reference internal" href="#rctorch.BruteForceMesh.run"><code class="docutils literal notranslate"><span class="pre">BruteForceMesh.run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#rctorch.ParticleSwarmOptimizer"><code class="docutils literal notranslate"><span class="pre">ParticleSwarmOptimizer</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li><a class="reference internal" href="#rctorch.z_transform"><code class="docutils literal notranslate"><span class="pre">z_transform()</span></code></a></li>
+<li><a class="reference internal" href="#rctorch.minmax_transform"><code class="docutils literal notranslate"><span class="pre">minmax_transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
