@@ -3,11 +3,11 @@
 """A module that implements coordinate descent for the MorrisLecarBlock class"""
 
 import concurrent.futures
+import inspect
 import itertools
 import json
 import os
 import threading
-from json.encoder import JSONEncoder
 from sys import argv
 from typing import Any, Union
 
@@ -16,7 +16,6 @@ import torch
 
 from .models import *
 from .reservoir import Reservoir
-from .utils import z_transform
 
 
 class BruteForceMesh:
@@ -82,7 +81,7 @@ class BruteForceMesh:
             futures = []
             for indices in all_indices:
                 reservoir_params = self._create_reservoir_params(indices)
-                future = executor.submit(self._run_and_save_simulation, reservoir_params, indices, save_dir)
+                future = executor.submit(self._run_and_save_simulation, reservoir_params, save_dir)
                 futures.append(future)
                 print(f"Submitted simulation with params: {reservoir_params}")
 
@@ -98,7 +97,7 @@ class BruteForceMesh:
         reservoir_params = reservoir_params | self.reservoir_kwargs
         return reservoir_params
 
-    def _run_and_save_simulation(self, reservoir_params: dict, indices, save_dir: str) -> None:
+    def _run_and_save_simulation(self, reservoir_params: dict, save_dir: str) -> None:
         """
         Run a single simulation, save its data to a separate directory.
 
@@ -114,10 +113,10 @@ class BruteForceMesh:
         try:
             res = Reservoir(**reservoir_params)  # Instantiate the reservoir with all the specified params
             xhat_rec_train = res.fit_force(**self.train_kwargs)
-            xhat_rec_test = res.forward(**self.test_kwargs)
+            s_rec_test, xhat_rec_test = res.forward(**self.test_kwargs)
 
         except Exception as e:
-            # print(f"Error running simulation with params {reservoir_params}: {e}")
+            print(f"Error running simulation with params {reservoir_params}: {e}")
             raise Warning(f"Error running simulation with params {reservoir_params}: {e}")
 
         try:
@@ -132,13 +131,10 @@ class BruteForceMesh:
                 simulation_dir, reservoir_params, xhat_rec_train.cpu().numpy(), xhat_rec_test.cpu().numpy()
             )
 
-            # Optionally, update the nested lists (if you need to access all results later in memory)
-            # self._store_results_in_memory(indices, reservoir_params, xhat_rec)
-
             print(f"Simulation with params {reservoir_params} saved to {simulation_dir}")
 
         except Exception as e:
-            raise Warning("Coudln't save simulation results...")
+            raise Warning(f"Coudln't save simulation results...\n{e}")
 
     def _save_simulation_data(
         self,
@@ -161,7 +157,7 @@ class BruteForceMesh:
         reservoir_params.pop("model_cls")
         reservoir_params.pop("device")
         with open(params_fp, "w") as params_file:
-            json.dump(reservoir_params, fp=params_file, cls=NumpyArrayEncoder)
+            json.dump(reservoir_params, fp=params_file, cls=KWArgsEncoder)
         output_file = os.path.join(save_path, "output_data_train.npy")
         np.save(output_file, output_data_train)
         output_file = os.path.join(save_path, "output_data_test.npy")
@@ -187,15 +183,50 @@ class BruteForceMesh:
         set_nested_value(self.model_outputs, indices, output_data)
 
 
-class NumpyArrayEncoder(json.encoder.JSONEncoder):
+class KWArgsEncoder(json.JSONEncoder):
     def default(self, o):
+        # Handle numpy arrays
         if isinstance(o, np.ndarray):
-            return o.tolist()
-        if isinstance(o, torch.DeviceObjType):
-            return str(o)
-        return JSONEncoder.default(self, o)
+            return {"__type__": "numpy.ndarray", "dtype": str(o.dtype), "shape": o.shape, "data": o.tolist()}
+
+        # Handle numpy scalars
+        if isinstance(o, (np.generic,)):
+            return o.item()
+
+        # Handle torch device type
+        if isinstance(o, torch.device):
+            return {"__type__": "torch.device", "device_type": o.type, "index": o.index}
+
+        if isinstance(o, torch.dtype):
+            return {"__type__": "torch.dtype", "dtype": str(o)}
+
+        if isinstance(o, torch.device.type.__class__):
+            # Rare case: direct DeviceType enum-like object
+            return {"__type__": "torch.DeviceType", "value": str(o)}
+
+        # Handle classes and types
+        if inspect.isclass(o):
+            return {"__type__": "class", "module": o.__module__, "name": o.__name__}
+
+        # Handle functions or callables
+        if callable(o):
+            return {"__type__": "callable", "module": o.__module__, "name": o.__name__}
+
+        # Handle objects from your custom classes
+        if hasattr(o, "__class__") and not isinstance(
+            o, (str, bytes, bytearray, dict, list, tuple, int, float, bool, type(None))
+        ):
+            return {
+                "__type__": "object",
+                "class": {"module": o.__class__.__module__, "name": o.__class__.__name__},
+                "attributes": o.__dict__,
+            }
+
+        # Fallback to default
+        return super().default(o)
 
 
+# TODO: Update PSO to match the new model architecture
 class ParticleSwarmOptimizer:
     def __init__(
         self,
@@ -243,134 +274,3 @@ class ParticleSwarmOptimizer:
         social: float = 1.4944,
     ):
         pass
-
-
-class TestModel:
-    def __init__(self, Q, gbar, dt) -> None:
-        self.Q = Q
-        self.dt = dt
-        self.gbar = gbar
-        self.n = 2000
-        self.sup = torch.randn(self.n, 1)
-        self.x_hat_rec = torch.randn(self.n, 1)
-
-    def render(self, rls_stop):
-        return 0, [0, 0, 0], rls_stop
-
-
-def test():
-    params = {"Q": np.arange(50), "gbar": np.arange(30)}
-    render_args = {"rls_stop": 0}
-    default_args = {"dt": 1.0}
-    bfm = BruteForceMesh(TestModel, default_args, render_args, params)
-    bfm.run()
-    import os
-
-    cwd = os.getcwd()
-    resdir = os.path.join(cwd, "results", "test")
-    if not os.path.exists(resdir):
-        os.makedirs(resdir)
-    bfm.save_data(resdir, f_id="01")
-
-
-def main():
-    # Get the freq of the supervisor from the user
-    # try:
-    #     freq = float(input(">> Enter the frequency of the supvisor in [Hz]:\n>> "))
-    # except:
-    #     raise ValueError("You need to pass in a float as an argument.")
-
-    seed = 1
-    np.random.seed(seed)
-    torch.cuda.manual_seed(seed)
-    # Set the param ranges
-    Q_range = np.linspace(0, 500, 20)
-    gbar_range = np.linspace(0, 20, 10)
-    # chop the mesh into portions to not reach time limit on ARC server nodes
-    portion = int(argv[1])
-    if portion >= 4:
-        raise ValueError("Argument must be an integer from 0 to 3...")
-
-    q_mid = int(Q_range.size // 2)
-    gbar_mid = int(gbar_range.size // 2)
-    q_idx = portion % 2
-    gbar_idx = portion // 2
-    if q_idx == 0:
-        Q_range = Q_range[:q_mid]
-    else:
-        Q_range = Q_range[q_mid:]
-
-    if gbar_idx == 0:
-        gbar_range = gbar_range[:gbar_mid]
-    else:
-        gbar_range = gbar_range[gbar_mid:]
-
-    bfm_params = {"Q": Q_range, "gbar": gbar_range}
-
-    lamda = 1e-5
-
-    from supervisors import LorenzAttractor
-
-    # Global params for the model
-    T = 12000
-    dt = 1e-2
-
-    x = LorenzAttractor(T, dt, tau=0.008).generate(transient_time=500.0)
-    x = x.T
-    signal = z_transform(x)
-
-    NE = 200
-    NI = 200
-    N = NI + NE
-
-    # input current for I and E neurons
-    Ie = 75
-    Ii = 75
-    current = np.ones((N, 1))
-    middle = N // 2
-    current[:middle] *= Ie  # NE bias
-    current[middle:] *= Ii  # NI bias
-
-    # RLS params
-    rls_start = round(T * 0.02)
-    rls_start = 500
-    rls_stop = round(T * 0.85)
-    rls_step = 20
-
-    default_args = {
-        "T": T,
-        "supervisor": signal,
-        "BIAS": current,
-        "dt": dt,
-        "N": N,
-        "l": lamda,
-    }
-
-    # device_choice = input(">> Enter device (GPU/CPU): ")
-    device_choice = "GPU"
-    if device_choice == "GPU":
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        print(f"Using Device <{device}> for PyTorch computations...\n")
-        default_args = default_args | {"device": device}
-
-    render_args = {
-        "rls_start": rls_start,
-        "rls_stop": rls_stop,
-        "rls_step": rls_step,
-        "live_plot": False,
-        "plt_interval": 100,
-        "n_neurons": 10,
-        "save_all": False,
-    }
-
-    model = MorrisLecar
-    bfm = BruteForceMesh(model, default_args, render_args, bfm_params)
-    try:
-        bfm.run(save_dir="./results")
-
-    except Exception as e:
-        raise RuntimeError("Run cancelled with error:\n", e)
-
-
-if __name__ == "__main__":
-    test()
