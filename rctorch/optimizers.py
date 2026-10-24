@@ -8,8 +8,7 @@ import itertools
 import json
 import os
 import threading
-from sys import argv
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 import torch
@@ -113,11 +112,11 @@ class BruteForceMesh:
         try:
             res = Reservoir(**reservoir_params)  # Instantiate the reservoir with all the specified params
             xhat_rec_train = res.fit_force(**self.train_kwargs)
-            s_rec_test, xhat_rec_test = res.forward(**self.test_kwargs)
+            _s_rec_test, xhat_rec_test = res.forward(**self.test_kwargs)
 
         except Exception as e:
             print(f"Error running simulation with params {reservoir_params}: {e}")
-            raise Warning(f"Error running simulation with params {reservoir_params}: {e}")
+            raise Warning(f"Error running simulation with params {reservoir_params}: {e}") from e
 
         try:
             # Construct a unique directory name based on parameters
@@ -128,13 +127,16 @@ class BruteForceMesh:
             os.makedirs(simulation_dir, exist_ok=True)
             # Save data for this simulation
             self._save_simulation_data(
-                simulation_dir, reservoir_params, xhat_rec_train.cpu().numpy(), xhat_rec_test.cpu().numpy()
+                simulation_dir,
+                reservoir_params,
+                xhat_rec_train.cpu().numpy(),
+                xhat_rec_test.cpu().numpy(),
             )
 
             print(f"Simulation with params {reservoir_params} saved to {simulation_dir}")
 
         except Exception as e:
-            raise Warning(f"Coudln't save simulation results...\n{e}")
+            raise Warning(f"Coudln't save simulation results...\n{e}") from e
 
     def _save_simulation_data(
         self,
@@ -187,7 +189,12 @@ class KWArgsEncoder(json.JSONEncoder):
     def default(self, o):
         # Handle numpy arrays
         if isinstance(o, np.ndarray):
-            return {"__type__": "numpy.ndarray", "dtype": str(o.dtype), "shape": o.shape, "data": o.tolist()}
+            return {
+                "__type__": "numpy.ndarray",
+                "dtype": str(o.dtype),
+                "shape": o.shape,
+                "data": o.tolist(),
+            }
 
         # Handle numpy scalars
         if isinstance(o, (np.generic,)):
@@ -218,7 +225,10 @@ class KWArgsEncoder(json.JSONEncoder):
         ):
             return {
                 "__type__": "object",
-                "class": {"module": o.__class__.__module__, "name": o.__class__.__name__},
+                "class": {
+                    "module": o.__class__.__module__,
+                    "name": o.__class__.__name__,
+                },
                 "attributes": o.__dict__,
             }
 
@@ -230,7 +240,7 @@ class KWArgsEncoder(json.JSONEncoder):
 class ParticleSwarmOptimizer:
     def __init__(
         self,
-        Model: Union[MorrisLecar, object],
+        Model: MorrisLecar | object,
         render_args: dict[str, Any],
         default_args: dict[str, Any],
         n_particles: int = 10,
@@ -263,7 +273,7 @@ class ParticleSwarmOptimizer:
         return thread
 
     # TODO: Implement the fitness function
-    def fitness(self, states: Union[np.ndarray, torch.Tensor, np.number]):
+    def fitness(self, states: np.ndarray | torch.Tensor | np.number):
         pass
 
     # TODO: Implement the PSO algorithm

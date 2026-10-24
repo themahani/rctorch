@@ -1,8 +1,6 @@
-from typing import Union
-
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 
 from .base import SNNBase
 
@@ -13,14 +11,14 @@ class LIF(SNNBase):
         Ne: int,
         Ni: int,
         dt,
-        BIAS: Union[torch.Tensor, np.ndarray, float] = 80.0,
+        BIAS: torch.Tensor | np.ndarray | float = 80.0,
         tau_m: float = 50,
         tau_s: float = 20,
         gbar: float = 5,
         device: torch.device = torch.device("cpu"),
         dtype: torch.dtype = torch.float32,
     ) -> None:
-        super(LIF, self).__init__(n_hidden=Ne + Ni, dt=dt, dtype=dtype, device=device)
+        super().__init__(n_hidden=Ne + Ni, dt=dt, dtype=dtype, device=device)
         self.Ne = Ne
         self.Ni = Ni
         self.N = Ne + Ni
@@ -63,7 +61,7 @@ class LIFDoubleExp(LIF):
         Ne: int,
         Ni: int,
         dt,
-        BIAS: Union[torch.Tensor, np.ndarray, float] = 80.0,
+        BIAS: torch.Tensor | np.ndarray | float = 80.0,
         tau_m: float = 50,
         tau_r: float = 2,
         tau_d: float = 20,

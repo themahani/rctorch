@@ -2,20 +2,20 @@
 
 __version__ = "0.1.0"
 __all__ = [
-    # Models sub-package
-    "models",
-    # Reservoirs
-    "Reservoir",
-    # Transformations
-    "minmax_transform",
-    "z_transform",
-    # Supervisors
-    "VanDerPol",
-    "LorenzAttractor",
-    "HyperChaoticAttractor",
     # Optimizers
     "BruteForceMesh",
+    "HyperChaoticAttractor",
+    "LorenzAttractor",
     "ParticleSwarmOptimizer",
+    # Reservoirs
+    "Reservoir",
+    # Supervisors
+    "VanDerPol",
+    # Transformations
+    "minmax_transform",
+    # Models sub-package
+    "models",
+    "z_transform",
 ]
 
 from . import models
