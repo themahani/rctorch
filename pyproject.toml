@@ -1,23 +1,15 @@
-[build-system]
-requires = ["setuptools>=45", "wheel"]
-build-backend = "setuptools.build_meta"
-
-[tool.black]
-line-length = 127
-include = '\.pyi?$'
-
-[tool.isort]
-profile = "black"
-line_length = 127
-multi_line_output = 3
-include_trailing_comma = true
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra -q"
-pythonpath = [
-    ".",
+[project]
+name = "rctorch"
+version = "0.2.0"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.4.6",
+    "torch>=2.14.1",
+    "tqdm>=4.70.1",
 ]
-testpaths = [
-    "tests",
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.17.2",
 ]
