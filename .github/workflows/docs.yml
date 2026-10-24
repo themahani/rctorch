@@ -1,0 +1,71 @@
+name: Docs
+
+on:
+  push:
+    branches: [main, dev]
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Queue runs instead of cancelling them, so two runs never push to the gh-pages branch at the same time
+concurrency:
+  group: docs
+  cancel-in-progress: false
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # sphinx-multiversion needs every branch and tag
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          uv sync --locked --group docs
+
+      - name: Build the docs for main, dev, and the release tags
+        run: |
+          uv run sphinx-multiversion docs docs/_build/html
+
+      - name: Redirect the root to the latest release, or to main if there is none
+        run: |
+          target=main
+          for tag in $(git tag --list 'v*.*.*' --sort=-v:refname); do
+            if [ -d "docs/_build/html/$tag" ]; then
+              target=$tag
+              break
+            fi
+          done
+          cat > docs/_build/html/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>rcTorch documentation</title>
+              <meta http-equiv="refresh" content="0; url=$target/">
+              <link rel="canonical" href="https://themahani.github.io/rctorch/$target/">
+            </head>
+            <body>
+              <a href="$target/">Go to the rcTorch documentation</a>
+            </body>
+          </html>
+          EOF
+
+      # GitHub Pages serves the gh-pages branch at https://themahani.github.io/rctorch/
+      - name: Push the HTML to the gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs/_build/html
+          force_orphan: true

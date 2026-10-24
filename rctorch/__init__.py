@@ -1,4 +1,4 @@
-"""rcTorch: Reservoir computing solution using pyTorch"""
+"""rcTorch: reservoir computing with spiking neural networks in PyTorch."""
 
 __version__ = "0.1.0"
 __all__ = [
